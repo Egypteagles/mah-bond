@@ -23,6 +23,12 @@ export const Route = createRootRoute({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "بيننا — تفاعل يومي بين الأب وابنه" },
+      { name: "description", content: "My Day's Echo is an interactive daily app for fathers and sons to connect asynchronously." },
+      { property: "og:description", content: "My Day's Echo is an interactive daily app for fathers and sons to connect asynchronously." },
+      { name: "twitter:description", content: "My Day's Echo is an interactive daily app for fathers and sons to connect asynchronously." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/ogaOyShftIU7GxBfHLw2I3iT0Q23/social-images/social-1776787260299-1000014524.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/ogaOyShftIU7GxBfHLw2I3iT0Q23/social-images/social-1776787260299-1000014524.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
