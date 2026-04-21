@@ -14,16 +14,343 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      answers: {
+        Row: {
+          capsule_id: string
+          content: string
+          created_at: string
+          family_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          capsule_id: string
+          content: string
+          created_at?: string
+          family_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          capsule_id?: string
+          content?: string
+          created_at?: string
+          family_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "answers_capsule_id_fkey"
+            columns: ["capsule_id"]
+            isOneToOne: false
+            referencedRelation: "daily_capsules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "answers_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenge_completions: {
+        Row: {
+          capsule_id: string
+          completed_at: string
+          family_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          capsule_id: string
+          completed_at?: string
+          family_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          capsule_id?: string
+          completed_at?: string
+          family_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_completions_capsule_id_fkey"
+            columns: ["capsule_id"]
+            isOneToOne: false
+            referencedRelation: "daily_capsules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_completions_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_capsules: {
+        Row: {
+          capsule_date: string
+          challenge: string
+          created_at: string
+          family_id: string
+          id: string
+          question: string
+        }
+        Insert: {
+          capsule_date: string
+          challenge: string
+          created_at?: string
+          family_id: string
+          id?: string
+          question: string
+        }
+        Update: {
+          capsule_date?: string
+          challenge?: string
+          created_at?: string
+          family_id?: string
+          id?: string
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_capsules_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      families: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          invite_code: string
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          invite_code: string
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          invite_code?: string
+          name?: string | null
+        }
+        Relationships: []
+      }
+      moment_reactions: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          moment_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          id?: string
+          moment_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          moment_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moment_reactions_moment_id_fkey"
+            columns: ["moment_id"]
+            isOneToOne: false
+            referencedRelation: "moments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      moments: {
+        Row: {
+          capsule_id: string
+          content: string | null
+          created_at: string
+          family_id: string
+          id: string
+          image_url: string | null
+          user_id: string
+        }
+        Insert: {
+          capsule_id: string
+          content?: string | null
+          created_at?: string
+          family_id: string
+          id?: string
+          image_url?: string | null
+          user_id: string
+        }
+        Update: {
+          capsule_id?: string
+          content?: string | null
+          created_at?: string
+          family_id?: string
+          id?: string
+          image_url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moments_capsule_id_fkey"
+            columns: ["capsule_id"]
+            isOneToOne: false
+            referencedRelation: "daily_capsules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "moments_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string
+          family_id: string | null
+          id: string
+          notifications_enabled: boolean
+          reminder_time: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name: string
+          family_id?: string | null
+          id: string
+          notifications_enabled?: boolean
+          reminder_time?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          family_id?: string | null
+          id?: string
+          notifications_enabled?: boolean
+          reminder_time?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      streaks: {
+        Row: {
+          current_streak: number
+          family_id: string
+          last_active_date: string | null
+          longest_streak: number
+          updated_at: string
+        }
+        Insert: {
+          current_streak?: number
+          family_id: string
+          last_active_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+        }
+        Update: {
+          current_streak?: number
+          family_id?: string
+          last_active_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "streaks_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: true
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          family_id: string
+          id: string
+          role: Database["public"]["Enums"]["family_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          family_id: string
+          id?: string
+          role: Database["public"]["Enums"]["family_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          family_id?: string
+          id?: string
+          role?: Database["public"]["Enums"]["family_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      both_answered: { Args: { _capsule_id: string }; Returns: boolean }
+      generate_invite_code: { Args: never; Returns: string }
+      get_user_family_id: { Args: { _user_id: string }; Returns: string }
+      is_family_member: {
+        Args: { _family_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      family_role: "parent" | "child"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +477,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      family_role: ["parent", "child"],
+    },
   },
 } as const
