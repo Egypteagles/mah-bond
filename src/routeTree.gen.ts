@@ -9,38 +9,198 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TodayRouteImport } from './routes/today'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ArchiveRouteImport } from './routes/archive'
+import { Route as AchievementsRouteImport } from './routes/achievements'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TodayQuestionRouteImport } from './routes/today.question'
+import { Route as TodayMomentRouteImport } from './routes/today.moment'
+import { Route as TodayChallengeRouteImport } from './routes/today.challenge'
 
+const TodayRoute = TodayRouteImport.update({
+  id: '/today',
+  path: '/today',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchiveRoute = ArchiveRouteImport.update({
+  id: '/archive',
+  path: '/archive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AchievementsRoute = AchievementsRouteImport.update({
+  id: '/achievements',
+  path: '/achievements',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TodayQuestionRoute = TodayQuestionRouteImport.update({
+  id: '/question',
+  path: '/question',
+  getParentRoute: () => TodayRoute,
+} as any)
+const TodayMomentRoute = TodayMomentRouteImport.update({
+  id: '/moment',
+  path: '/moment',
+  getParentRoute: () => TodayRoute,
+} as any)
+const TodayChallengeRoute = TodayChallengeRouteImport.update({
+  id: '/challenge',
+  path: '/challenge',
+  getParentRoute: () => TodayRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/achievements': typeof AchievementsRoute
+  '/archive': typeof ArchiveRoute
+  '/auth': typeof AuthRoute
+  '/onboarding': typeof OnboardingRoute
+  '/settings': typeof SettingsRoute
+  '/today': typeof TodayRouteWithChildren
+  '/today/challenge': typeof TodayChallengeRoute
+  '/today/moment': typeof TodayMomentRoute
+  '/today/question': typeof TodayQuestionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/achievements': typeof AchievementsRoute
+  '/archive': typeof ArchiveRoute
+  '/auth': typeof AuthRoute
+  '/onboarding': typeof OnboardingRoute
+  '/settings': typeof SettingsRoute
+  '/today': typeof TodayRouteWithChildren
+  '/today/challenge': typeof TodayChallengeRoute
+  '/today/moment': typeof TodayMomentRoute
+  '/today/question': typeof TodayQuestionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/achievements': typeof AchievementsRoute
+  '/archive': typeof ArchiveRoute
+  '/auth': typeof AuthRoute
+  '/onboarding': typeof OnboardingRoute
+  '/settings': typeof SettingsRoute
+  '/today': typeof TodayRouteWithChildren
+  '/today/challenge': typeof TodayChallengeRoute
+  '/today/moment': typeof TodayMomentRoute
+  '/today/question': typeof TodayQuestionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/achievements'
+    | '/archive'
+    | '/auth'
+    | '/onboarding'
+    | '/settings'
+    | '/today'
+    | '/today/challenge'
+    | '/today/moment'
+    | '/today/question'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/achievements'
+    | '/archive'
+    | '/auth'
+    | '/onboarding'
+    | '/settings'
+    | '/today'
+    | '/today/challenge'
+    | '/today/moment'
+    | '/today/question'
+  id:
+    | '__root__'
+    | '/'
+    | '/achievements'
+    | '/archive'
+    | '/auth'
+    | '/onboarding'
+    | '/settings'
+    | '/today'
+    | '/today/challenge'
+    | '/today/moment'
+    | '/today/question'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AchievementsRoute: typeof AchievementsRoute
+  ArchiveRoute: typeof ArchiveRoute
+  AuthRoute: typeof AuthRoute
+  OnboardingRoute: typeof OnboardingRoute
+  SettingsRoute: typeof SettingsRoute
+  TodayRoute: typeof TodayRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/today': {
+      id: '/today'
+      path: '/today'
+      fullPath: '/today'
+      preLoaderRoute: typeof TodayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/archive': {
+      id: '/archive'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof ArchiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/achievements': {
+      id: '/achievements'
+      path: '/achievements'
+      fullPath: '/achievements'
+      preLoaderRoute: typeof AchievementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +208,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/today/question': {
+      id: '/today/question'
+      path: '/question'
+      fullPath: '/today/question'
+      preLoaderRoute: typeof TodayQuestionRouteImport
+      parentRoute: typeof TodayRoute
+    }
+    '/today/moment': {
+      id: '/today/moment'
+      path: '/moment'
+      fullPath: '/today/moment'
+      preLoaderRoute: typeof TodayMomentRouteImport
+      parentRoute: typeof TodayRoute
+    }
+    '/today/challenge': {
+      id: '/today/challenge'
+      path: '/challenge'
+      fullPath: '/today/challenge'
+      preLoaderRoute: typeof TodayChallengeRouteImport
+      parentRoute: typeof TodayRoute
+    }
   }
 }
 
+interface TodayRouteChildren {
+  TodayChallengeRoute: typeof TodayChallengeRoute
+  TodayMomentRoute: typeof TodayMomentRoute
+  TodayQuestionRoute: typeof TodayQuestionRoute
+}
+
+const TodayRouteChildren: TodayRouteChildren = {
+  TodayChallengeRoute: TodayChallengeRoute,
+  TodayMomentRoute: TodayMomentRoute,
+  TodayQuestionRoute: TodayQuestionRoute,
+}
+
+const TodayRouteWithChildren = TodayRoute._addFileChildren(TodayRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AchievementsRoute: AchievementsRoute,
+  ArchiveRoute: ArchiveRoute,
+  AuthRoute: AuthRoute,
+  OnboardingRoute: OnboardingRoute,
+  SettingsRoute: SettingsRoute,
+  TodayRoute: TodayRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
