@@ -1,14 +1,18 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Heart, Home, Archive, Trophy, Settings, LogOut } from "lucide-react";
+import { Heart, Home, Archive, Trophy, Settings, LogOut, MessageSquare, Bell, Star, BarChart3, Brain, Moon, Sun } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useFamily } from "@/hooks/use-family";
 import { Button } from "@/components/ui/button";
+import { useNotifications } from "@/hooks/use-notifications";
+import { useTheme } from "@/hooks/use-theme";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { signOut } = useAuth();
   const { family, profile, role } = useFamily();
   const navigate = useNavigate();
   const location = useLocation();
+  const { unread } = useNotifications();
+  const { theme, toggle } = useTheme();
 
   async function handleLogout() {
     await signOut();
@@ -17,8 +21,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const navItems = [
     { to: "/today", label: "اليوم", icon: Home },
+    { to: "/chat", label: "دردشة", icon: MessageSquare },
+    { to: "/goals", label: "أهداف", icon: Star },
     { to: "/archive", label: "الأرشيف", icon: Archive },
     { to: "/achievements", label: "الإنجازات", icon: Trophy },
+    { to: "/stats", label: "إحصائيات", icon: BarChart3 },
+    { to: "/quiz", label: "توافق", icon: Brain },
     { to: "/settings", label: "الإعدادات", icon: Settings },
   ] as const;
 
@@ -62,14 +70,41 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </Link>
               );
             })}
+            <Link
+              to="/inbox"
+              className="relative flex items-center gap-1 rounded-lg px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <Bell className="h-4 w-4" />
+              {unread > 0 && (
+                <span className="absolute -top-1 -left-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-accent-foreground">
+                  {unread}
+                </span>
+              )}
+            </Link>
+            <Button variant="ghost" size="sm" onClick={toggle}>
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
             <Button variant="ghost" size="sm" onClick={handleLogout} className="ml-2">
               <LogOut className="h-4 w-4" />
             </Button>
           </nav>
 
-          <Button variant="ghost" size="icon" onClick={handleLogout} className="md:hidden">
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-1 md:hidden">
+            <Link to="/inbox" className="relative inline-flex h-9 w-9 items-center justify-center text-muted-foreground">
+              <Bell className="h-5 w-5" />
+              {unread > 0 && (
+                <span className="absolute -top-0.5 -left-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-accent-foreground">
+                  {unread}
+                </span>
+              )}
+            </Link>
+            <Button variant="ghost" size="icon" onClick={toggle}>
+              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleLogout}>
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -77,8 +112,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Bottom nav للموبايل */}
       <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-border bg-card/95 backdrop-blur-md md:hidden">
-        <div className="mx-auto flex max-w-4xl items-center justify-around px-2 py-2">
-          {navItems.map((item) => {
+        <div className="mx-auto flex max-w-4xl items-center justify-around overflow-x-auto px-1 py-2">
+          {navItems.slice(0, 6).map((item) => {
             const Icon = item.icon;
             const active = location.pathname === item.to ||
               (item.to !== "/today" && location.pathname.startsWith(item.to));
@@ -86,7 +121,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`flex flex-col items-center gap-1 rounded-lg px-3 py-2 text-[11px] font-medium transition-colors ${
+                className={`flex flex-col items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium transition-colors ${
                   active ? "text-primary" : "text-muted-foreground"
                 }`}
               >

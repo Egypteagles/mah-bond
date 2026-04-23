@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Loader2, Settings as SettingsIcon, Copy } from "lucide-react";
+import { Loader2, Settings as SettingsIcon, Copy, Download } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell, RequireFamily } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,38 @@ function SettingsPage() {
   const [reminderTime, setReminderTime] = useState("20:00");
   const [notifications, setNotifications] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  async function exportMemories() {
+    if (!family) return;
+    setExporting(true);
+    try {
+      const [caps, ans, moms] = await Promise.all([
+        supabase.from("daily_capsules").select("*").eq("family_id", family.id).order("capsule_date"),
+        supabase.from("answers").select("*").eq("family_id", family.id).order("created_at"),
+        supabase.from("moments").select("*").eq("family_id", family.id).order("created_at"),
+      ]);
+      const payload = {
+        exported_at: new Date().toISOString(),
+        family: family.name,
+        capsules: caps.data ?? [],
+        answers: ans.data ?? [],
+        moments: moms.data ?? [],
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `baynana-memories-${new Date().toISOString().split("T")[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("اتصدرت الذكريات");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "حصل خطأ");
+    } finally {
+      setExporting(false);
+    }
+  }
 
   useEffect(() => {
     if (profile) {
@@ -135,6 +167,17 @@ function SettingsPage() {
           </div>
         </div>
       )}
+
+      <div className="rounded-3xl bg-card p-5 shadow-soft">
+        <h2 className="font-display text-lg font-bold text-foreground">تصدير الذكريات</h2>
+        <p className="mt-1 text-xs text-muted-foreground">
+          نزّل كل كبسولاتكم وإجاباتكم ولحظاتكم في ملف واحد.
+        </p>
+        <Button onClick={exportMemories} disabled={exporting} variant="outline" className="mt-3 w-full">
+          {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+          تصدير JSON
+        </Button>
+      </div>
     </div>
   );
 }

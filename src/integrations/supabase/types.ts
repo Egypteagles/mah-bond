@@ -14,8 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      answer_comments: {
+        Row: {
+          answer_id: string
+          content: string
+          created_at: string
+          family_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          answer_id: string
+          content: string
+          created_at?: string
+          family_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          answer_id?: string
+          content?: string
+          created_at?: string
+          family_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "answer_comments_answer_id_fkey"
+            columns: ["answer_id"]
+            isOneToOne: false
+            referencedRelation: "answers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "answer_comments_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       answers: {
         Row: {
+          audio_url: string | null
           capsule_id: string
           content: string
           created_at: string
@@ -24,6 +67,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          audio_url?: string | null
           capsule_id: string
           content: string
           created_at?: string
@@ -32,6 +76,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          audio_url?: string | null
           capsule_id?: string
           content?: string
           created_at?: string
@@ -88,6 +133,80 @@ export type Database = {
           },
           {
             foreignKeyName: "challenge_completions_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      compatibility_answers: {
+        Row: {
+          answers: Json
+          created_at: string
+          family_id: string
+          id: string
+          quiz_id: string
+          user_id: string
+        }
+        Insert: {
+          answers: Json
+          created_at?: string
+          family_id: string
+          id?: string
+          quiz_id: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          family_id?: string
+          id?: string
+          quiz_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compatibility_answers_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compatibility_answers_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "compatibility_quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      compatibility_quizzes: {
+        Row: {
+          created_at: string
+          family_id: string
+          id: string
+          month_key: string
+          questions: Json
+        }
+        Insert: {
+          created_at?: string
+          family_id: string
+          id?: string
+          month_key: string
+          questions: Json
+        }
+        Update: {
+          created_at?: string
+          family_id?: string
+          id?: string
+          month_key?: string
+          questions?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compatibility_quizzes_family_id_fkey"
             columns: ["family_id"]
             isOneToOne: false
             referencedRelation: "families"
@@ -154,6 +273,44 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          audio_url: string | null
+          content: string | null
+          created_at: string
+          family_id: string
+          id: string
+          read_at: string | null
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          content?: string | null
+          created_at?: string
+          family_id: string
+          id?: string
+          read_at?: string | null
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          content?: string | null
+          created_at?: string
+          family_id?: string
+          id?: string
+          read_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       moment_reactions: {
         Row: {
           created_at: string
@@ -188,6 +345,7 @@ export type Database = {
       }
       moments: {
         Row: {
+          audio_url: string | null
           capsule_id: string
           content: string | null
           created_at: string
@@ -197,6 +355,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          audio_url?: string | null
           capsule_id: string
           content?: string | null
           created_at?: string
@@ -206,6 +365,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          audio_url?: string | null
           capsule_id?: string
           content?: string | null
           created_at?: string
@@ -224,6 +384,50 @@ export type Database = {
           },
           {
             foreignKeyName: "moments_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          family_id: string
+          id: string
+          link: string | null
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          family_id: string
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          family_id?: string
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_family_id_fkey"
             columns: ["family_id"]
             isOneToOne: false
             referencedRelation: "families"
@@ -279,6 +483,7 @@ export type Database = {
           last_active_date: string | null
           longest_streak: number
           updated_at: string
+          xp_total: number
         }
         Insert: {
           current_streak?: number
@@ -286,6 +491,7 @@ export type Database = {
           last_active_date?: string | null
           longest_streak?: number
           updated_at?: string
+          xp_total?: number
         }
         Update: {
           current_streak?: number
@@ -293,6 +499,7 @@ export type Database = {
           last_active_date?: string | null
           longest_streak?: number
           updated_at?: string
+          xp_total?: number
         }
         Relationships: [
           {
@@ -329,6 +536,62 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_roles_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weekly_goals: {
+        Row: {
+          completed_by_creator: boolean
+          completed_by_partner: boolean
+          created_at: string
+          created_by: string
+          description: string | null
+          family_id: string
+          id: string
+          progress_creator: number
+          progress_partner: number
+          target_count: number
+          title: string
+          updated_at: string
+          week_start: string
+        }
+        Insert: {
+          completed_by_creator?: boolean
+          completed_by_partner?: boolean
+          created_at?: string
+          created_by: string
+          description?: string | null
+          family_id: string
+          id?: string
+          progress_creator?: number
+          progress_partner?: number
+          target_count?: number
+          title: string
+          updated_at?: string
+          week_start: string
+        }
+        Update: {
+          completed_by_creator?: boolean
+          completed_by_partner?: boolean
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          family_id?: string
+          id?: string
+          progress_creator?: number
+          progress_partner?: number
+          target_count?: number
+          title?: string
+          updated_at?: string
+          week_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weekly_goals_family_id_fkey"
             columns: ["family_id"]
             isOneToOne: false
             referencedRelation: "families"

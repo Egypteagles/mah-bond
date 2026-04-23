@@ -8,6 +8,8 @@ import { AppShell, RequireFamily } from "@/components/app-shell";
 import { useFamily, ensureTodayCapsule } from "@/hooks/use-family";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { awardXP } from "@/lib/xp";
+import { notifyPartner } from "@/lib/notifications";
 
 export const Route = createFileRoute("/today/moment")({
   head: () => ({ meta: [{ title: "لحظة اليوم — بيننا" }] }),
@@ -103,6 +105,16 @@ function MomentPage() {
       setText("");
       setFile(null);
       await load();
+      await Promise.all([
+        awardXP(family.id, "moment"),
+        notifyPartner({
+          familyId: family.id,
+          partnerId: partnerProfile?.id,
+          type: "moment",
+          title: `${profile?.display_name ?? "الطرف التاني"} شارك لحظة جديدة`,
+          link: "/today/moment",
+        }),
+      ]);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "حصل خطأ");
     } finally {

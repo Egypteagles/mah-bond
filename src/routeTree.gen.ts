@@ -10,8 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TodayRouteImport } from './routes/today'
+import { Route as StatsRouteImport } from './routes/stats'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as InboxRouteImport } from './routes/inbox'
+import { Route as GoalsRouteImport } from './routes/goals'
+import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AchievementsRouteImport } from './routes/achievements'
@@ -25,14 +30,39 @@ const TodayRoute = TodayRouteImport.update({
   path: '/today',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StatsRoute = StatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuizRoute = QuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InboxRoute = InboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GoalsRoute = GoalsRouteImport.update({
+  id: '/goals',
+  path: '/goals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -76,8 +106,13 @@ export interface FileRoutesByFullPath {
   '/achievements': typeof AchievementsRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/chat': typeof ChatRoute
+  '/goals': typeof GoalsRoute
+  '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
+  '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
+  '/stats': typeof StatsRoute
   '/today': typeof TodayRouteWithChildren
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -88,8 +123,13 @@ export interface FileRoutesByTo {
   '/achievements': typeof AchievementsRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/chat': typeof ChatRoute
+  '/goals': typeof GoalsRoute
+  '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
+  '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
+  '/stats': typeof StatsRoute
   '/today': typeof TodayRouteWithChildren
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -101,8 +141,13 @@ export interface FileRoutesById {
   '/achievements': typeof AchievementsRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/chat': typeof ChatRoute
+  '/goals': typeof GoalsRoute
+  '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
+  '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
+  '/stats': typeof StatsRoute
   '/today': typeof TodayRouteWithChildren
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -115,8 +160,13 @@ export interface FileRouteTypes {
     | '/achievements'
     | '/archive'
     | '/auth'
+    | '/chat'
+    | '/goals'
+    | '/inbox'
     | '/onboarding'
+    | '/quiz'
     | '/settings'
+    | '/stats'
     | '/today'
     | '/today/challenge'
     | '/today/moment'
@@ -127,8 +177,13 @@ export interface FileRouteTypes {
     | '/achievements'
     | '/archive'
     | '/auth'
+    | '/chat'
+    | '/goals'
+    | '/inbox'
     | '/onboarding'
+    | '/quiz'
     | '/settings'
+    | '/stats'
     | '/today'
     | '/today/challenge'
     | '/today/moment'
@@ -139,8 +194,13 @@ export interface FileRouteTypes {
     | '/achievements'
     | '/archive'
     | '/auth'
+    | '/chat'
+    | '/goals'
+    | '/inbox'
     | '/onboarding'
+    | '/quiz'
     | '/settings'
+    | '/stats'
     | '/today'
     | '/today/challenge'
     | '/today/moment'
@@ -152,8 +212,13 @@ export interface RootRouteChildren {
   AchievementsRoute: typeof AchievementsRoute
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
+  ChatRoute: typeof ChatRoute
+  GoalsRoute: typeof GoalsRoute
+  InboxRoute: typeof InboxRoute
   OnboardingRoute: typeof OnboardingRoute
+  QuizRoute: typeof QuizRoute
   SettingsRoute: typeof SettingsRoute
+  StatsRoute: typeof StatsRoute
   TodayRoute: typeof TodayRouteWithChildren
 }
 
@@ -166,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TodayRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stats': {
+      id: '/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof StatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -173,11 +245,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quiz': {
+      id: '/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof QuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inbox': {
+      id: '/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof InboxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/goals': {
+      id: '/goals'
+      path: '/goals'
+      fullPath: '/goals'
+      preLoaderRoute: typeof GoalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -251,19 +351,15 @@ const rootRouteChildren: RootRouteChildren = {
   AchievementsRoute: AchievementsRoute,
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
+  ChatRoute: ChatRoute,
+  GoalsRoute: GoalsRoute,
+  InboxRoute: InboxRoute,
   OnboardingRoute: OnboardingRoute,
+  QuizRoute: QuizRoute,
   SettingsRoute: SettingsRoute,
+  StatsRoute: StatsRoute,
   TodayRoute: TodayRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
