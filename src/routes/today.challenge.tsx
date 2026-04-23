@@ -7,6 +7,9 @@ import { AppShell, RequireFamily } from "@/components/app-shell";
 import { useFamily, ensureTodayCapsule } from "@/hooks/use-family";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { recomputeStreak } from "@/lib/streak";
+import { awardXP } from "@/lib/xp";
+import { notifyPartner } from "@/lib/notifications";
 
 export const Route = createFileRoute("/today/challenge")({
   head: () => ({ meta: [{ title: "تحدي اليوم — بيننا" }] }),
@@ -21,7 +24,7 @@ export const Route = createFileRoute("/today/challenge")({
 
 function ChallengePage() {
   const { user } = useAuth();
-  const { family, partnerProfile } = useFamily();
+  const { family, partnerProfile, profile } = useFamily();
   const [capsule, setCapsule] = useState<{ id: string; challenge: string } | null>(null);
   const [completions, setCompletions] = useState<{ user_id: string }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,6 +73,17 @@ function ChallengePage() {
         setCelebrate(true);
         setTimeout(() => setCelebrate(false), 700);
         toast.success("برافو! 🎉");
+        await Promise.all([
+          recomputeStreak(family.id),
+          awardXP(family.id, "challenge"),
+          notifyPartner({
+            familyId: family.id,
+            partnerId: partnerProfile?.id,
+            type: "challenge",
+            title: `${profile?.display_name ?? "الطرف التاني"} خلص تحدي اليوم`,
+            link: "/today/challenge",
+          }),
+        ]);
       }
       await load();
     } catch (err) {
