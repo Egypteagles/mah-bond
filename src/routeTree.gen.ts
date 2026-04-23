@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AchievementsRouteImport } from './routes/achievements'
@@ -33,6 +34,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/achievements': typeof AchievementsRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/chat': typeof ChatRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRouteWithChildren
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/achievements': typeof AchievementsRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/chat': typeof ChatRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRouteWithChildren
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/achievements': typeof AchievementsRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/chat': typeof ChatRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRouteWithChildren
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/achievements'
     | '/archive'
     | '/auth'
+    | '/chat'
     | '/onboarding'
     | '/settings'
     | '/today'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/achievements'
     | '/archive'
     | '/auth'
+    | '/chat'
     | '/onboarding'
     | '/settings'
     | '/today'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/achievements'
     | '/archive'
     | '/auth'
+    | '/chat'
     | '/onboarding'
     | '/settings'
     | '/today'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   AchievementsRoute: typeof AchievementsRoute
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
+  ChatRoute: typeof ChatRoute
   OnboardingRoute: typeof OnboardingRoute
   SettingsRoute: typeof SettingsRoute
   TodayRoute: typeof TodayRouteWithChildren
@@ -178,6 +191,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -251,6 +271,7 @@ const rootRouteChildren: RootRouteChildren = {
   AchievementsRoute: AchievementsRoute,
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
+  ChatRoute: ChatRoute,
   OnboardingRoute: OnboardingRoute,
   SettingsRoute: SettingsRoute,
   TodayRoute: TodayRouteWithChildren,
@@ -258,3 +279,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
