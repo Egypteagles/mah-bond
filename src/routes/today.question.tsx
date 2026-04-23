@@ -9,6 +9,8 @@ import { useFamily, ensureTodayCapsule } from "@/hooks/use-family";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { recomputeStreak } from "@/lib/streak";
+import { awardXP } from "@/lib/xp";
+import { notifyPartner } from "@/lib/notifications";
 
 export const Route = createFileRoute("/today/question")({
   head: () => ({ meta: [{ title: "سؤال اليوم — بيننا" }] }),
@@ -74,7 +76,17 @@ function QuestionPage() {
       toast.success("اتسجلت إجابتك ✨");
       setDraft("");
       await load();
-      await recomputeStreak(family.id);
+      await Promise.all([
+        recomputeStreak(family.id),
+        awardXP(family.id, "answer"),
+        notifyPartner({
+          familyId: family.id,
+          partnerId: partnerProfile?.id,
+          type: "answer",
+          title: `${profile?.display_name ?? "الطرف التاني"} جاوب على سؤال اليوم`,
+          link: "/today/question",
+        }),
+      ]);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "حصل خطأ");
     } finally {
