@@ -113,14 +113,12 @@ function GoalsPage() {
   async function bumpProgress(g: Goal, delta: number) {
     if (!user || !family) return;
     const isCreator = g.created_by === user.id;
-    const field = isCreator ? "progress_creator" : "progress_partner";
-    const completedField = isCreator ? "completed_by_creator" : "completed_by_partner";
     const newProgress = Math.max(0, Math.min(g.target_count, (isCreator ? g.progress_creator : g.progress_partner) + delta));
     const completed = newProgress >= g.target_count;
-    await supabase
-      .from("weekly_goals")
-      .update({ [field]: newProgress, [completedField]: completed })
-      .eq("id", g.id);
+    const update = isCreator
+      ? { progress_creator: newProgress, completed_by_creator: completed }
+      : { progress_partner: newProgress, completed_by_partner: completed };
+    await supabase.from("weekly_goals").update(update).eq("id", g.id);
     if (completed && !((isCreator && g.completed_by_creator) || (!isCreator && g.completed_by_partner))) {
       await awardXP(family.id, "goal_complete");
       toast.success("مبروك! خلصت الهدف 🎉");
