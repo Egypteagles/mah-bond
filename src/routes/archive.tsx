@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Loader2, Archive as ArchiveIcon, MessageCircle, Target, Camera } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Loader2, Archive as ArchiveIcon, MessageCircle, Target, Camera, Search } from "lucide-react";
 import { AppShell, RequireFamily } from "@/components/app-shell";
+import { Input } from "@/components/ui/input";
 import { useFamily } from "@/hooks/use-family";
 import { supabase } from "@/integrations/supabase/client";
 import { formatArabicDate } from "@/lib/content";
@@ -31,6 +32,7 @@ function ArchivePage() {
   const { family } = useFamily();
   const [items, setItems] = useState<CapsuleSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     if (!family) return;
@@ -55,6 +57,14 @@ function ArchivePage() {
     })();
   }, [family]);
 
+  const filtered = useMemo(() => {
+    if (!query.trim()) return items;
+    const q = query.trim().toLowerCase();
+    return items.filter(
+      (c) => c.question.toLowerCase().includes(q) || c.challenge.toLowerCase().includes(q),
+    );
+  }, [items, query]);
+
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -69,13 +79,22 @@ function ArchivePage() {
         <ArchiveIcon className="h-5 w-5 text-primary" />
         <h1 className="font-display text-2xl font-bold text-foreground">الأرشيف</h1>
       </div>
-      {items.length === 0 ? (
+      <div className="relative">
+        <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="ابحث في الأسئلة والتحديات..."
+          className="pr-10"
+        />
+      </div>
+      {filtered.length === 0 ? (
         <p className="py-12 text-center text-sm text-muted-foreground">
-          لسه ما فيش كبسولات سابقة.
+          {query ? "ما لقيناش نتايج" : "لسه ما فيش كبسولات سابقة."}
         </p>
       ) : (
         <div className="space-y-3">
-          {items.map((c) => (
+          {filtered.map((c) => (
             <Link
               key={c.id}
               to="/today"
