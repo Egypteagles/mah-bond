@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArchiveRouteImport } from './routes/archive'
@@ -34,6 +35,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InboxRoute = InboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatRoute = ChatRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRouteWithChildren
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRouteWithChildren
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRouteWithChildren
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/inbox'
     | '/onboarding'
     | '/settings'
     | '/today'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/inbox'
     | '/onboarding'
     | '/settings'
     | '/today'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/inbox'
     | '/onboarding'
     | '/settings'
     | '/today'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
   ChatRoute: typeof ChatRoute
+  InboxRoute: typeof InboxRoute
   OnboardingRoute: typeof OnboardingRoute
   SettingsRoute: typeof SettingsRoute
   TodayRoute: typeof TodayRouteWithChildren
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inbox': {
+      id: '/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof InboxRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat': {
@@ -272,6 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
   ChatRoute: ChatRoute,
+  InboxRoute: InboxRoute,
   OnboardingRoute: OnboardingRoute,
   SettingsRoute: SettingsRoute,
   TodayRoute: TodayRouteWithChildren,
