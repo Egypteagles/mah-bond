@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Loader2, Flame, Trophy, MessageCircle, Target, Camera, Award } from "lucide-react";
+import { Loader2, Flame, Trophy, MessageCircle, Target, Camera } from "lucide-react";
 import { AppShell, RequireFamily } from "@/components/app-shell";
 import { useFamily } from "@/hooks/use-family";
 import { supabase } from "@/integrations/supabase/client";
+import { LevelBar } from "@/components/features/level-bar";
+import { BADGES, type BadgeStats } from "@/lib/badges";
 
 export const Route = createFileRoute("/achievements")({
   head: () => ({ meta: [{ title: "الإنجازات — بيننا" }] }),
@@ -18,29 +20,29 @@ export const Route = createFileRoute("/achievements")({
 
 function AchievementsPage() {
   const { family } = useFamily();
-  const [stats, setStats] = useState<{
-    current: number;
-    longest: number;
-    answers: number;
-    challenges: number;
-    moments: number;
-  } | null>(null);
+  const [stats, setStats] = useState<(BadgeStats & { xp: number }) | null>(null);
 
   useEffect(() => {
     if (!family) return;
     (async () => {
-      const [s, a, c, m] = await Promise.all([
+      const [s, a, c, m, msgs, gls] = await Promise.all([
         supabase.from("streaks").select("*").eq("family_id", family.id).maybeSingle(),
         supabase.from("answers").select("id", { count: "exact", head: true }).eq("family_id", family.id),
         supabase.from("challenge_completions").select("id", { count: "exact", head: true }).eq("family_id", family.id),
         supabase.from("moments").select("id", { count: "exact", head: true }).eq("family_id", family.id),
+        supabase.from("messages").select("id", { count: "exact", head: true }).eq("family_id", family.id),
+        supabase.from("weekly_goals").select("completed_by_creator, completed_by_partner").eq("family_id", family.id),
       ]);
+      const goalsDone = (gls.data ?? []).filter((g) => g.completed_by_creator && g.completed_by_partner).length;
       setStats({
         current: s.data?.current_streak ?? 0,
         longest: s.data?.longest_streak ?? 0,
         answers: a.count ?? 0,
         challenges: c.count ?? 0,
         moments: m.count ?? 0,
+        messages: msgs.count ?? 0,
+        goals: goalsDone,
+        xp: s.data?.xp_total ?? 0,
       });
     })();
   }, [family]);
@@ -53,19 +55,14 @@ function AchievementsPage() {
     );
   }
 
-  const badges = [
-    { days: 7, label: "أسبوع كامل", emoji: "🌱" },
-    { days: 30, label: "شهر متواصل", emoji: "🌳" },
-    { days: 100, label: "١٠٠ يوم", emoji: "🏆" },
-    { days: 365, label: "سنة كاملة", emoji: "👑" },
-  ];
-
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Trophy className="h-5 w-5 text-accent" />
         <h1 className="font-display text-2xl font-bold text-foreground">الإنجازات</h1>
       </div>
+
+      <LevelBar xp={stats.xp} />
 
       <div className="rounded-3xl bg-gradient-warm p-6 text-center shadow-soft">
         <Flame
@@ -89,19 +86,19 @@ function AchievementsPage() {
 
       <div>
         <h2 className="mb-3 font-display text-lg font-bold text-foreground">الشارات</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {badges.map((b) => {
-            const earned = stats.longest >= b.days;
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {BADGES.map((b) => {
+            const earned = b.check(stats);
             return (
               <div
-                key={b.days}
+                key={b.id}
                 className={`rounded-2xl p-4 text-center ${
                   earned ? "bg-accent/15" : "bg-muted opacity-60"
                 }`}
               >
                 <div className="text-3xl">{earned ? b.emoji : "🔒"}</div>
                 <div className="mt-1 text-sm font-bold text-foreground">{b.label}</div>
-                <div className="text-[11px] text-muted-foreground">{b.days} يوم</div>
+                <div className="text-[11px] text-muted-foreground">{b.description}</div>
               </div>
             );
           })}
