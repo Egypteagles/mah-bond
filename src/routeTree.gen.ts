@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as GoalsRouteImport } from './routes/goals'
@@ -31,6 +32,11 @@ const TodayRoute = TodayRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizRoute = QuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
+  '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRouteWithChildren
   '/today/challenge': typeof TodayChallengeRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
+  '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRouteWithChildren
   '/today/challenge': typeof TodayChallengeRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
+  '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/today': typeof TodayRouteWithChildren
   '/today/challenge': typeof TodayChallengeRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/inbox'
     | '/onboarding'
+    | '/quiz'
     | '/settings'
     | '/today'
     | '/today/challenge'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/inbox'
     | '/onboarding'
+    | '/quiz'
     | '/settings'
     | '/today'
     | '/today/challenge'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/inbox'
     | '/onboarding'
+    | '/quiz'
     | '/settings'
     | '/today'
     | '/today/challenge'
@@ -192,6 +204,7 @@ export interface RootRouteChildren {
   GoalsRoute: typeof GoalsRoute
   InboxRoute: typeof InboxRoute
   OnboardingRoute: typeof OnboardingRoute
+  QuizRoute: typeof QuizRoute
   SettingsRoute: typeof SettingsRoute
   TodayRoute: typeof TodayRouteWithChildren
 }
@@ -210,6 +223,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz': {
+      id: '/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof QuizRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -315,9 +335,19 @@ const rootRouteChildren: RootRouteChildren = {
   GoalsRoute: GoalsRoute,
   InboxRoute: InboxRoute,
   OnboardingRoute: OnboardingRoute,
+  QuizRoute: QuizRoute,
   SettingsRoute: SettingsRoute,
   TodayRoute: TodayRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
