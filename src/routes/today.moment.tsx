@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { awardXP } from "@/lib/xp";
 import { notifyPartner } from "@/lib/notifications";
+import { VoiceRecorder, AudioPlayer } from "@/components/features/voice-recorder";
 
 export const Route = createFileRoute("/today/moment")({
   head: () => ({ meta: [{ title: "لحظة اليوم — بيننا" }] }),
@@ -27,6 +28,7 @@ interface MomentRow {
   user_id: string;
   content: string | null;
   image_url: string | null;
+  audio_url: string | null;
   created_at: string;
 }
 
@@ -40,6 +42,7 @@ function MomentPage() {
   >([]);
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -76,8 +79,8 @@ function MomentPage() {
   async function share(e: React.FormEvent) {
     e.preventDefault();
     if (!user || !family || !capsuleId) return;
-    if (!text.trim() && !file) {
-      toast.error("اكتب جملة أو ارفع صورة");
+    if (!text.trim() && !file && !audioBlob) {
+      toast.error("اكتب جملة أو ارفع صورة أو سجل صوت");
       return;
     }
     setBusy(true);
@@ -93,17 +96,31 @@ function MomentPage() {
         const { data } = supabase.storage.from("moments").getPublicUrl(path);
         imageUrl = data.publicUrl;
       }
+      let audioUrl: string | null = null;
+      if (audioBlob) {
+        const path = `${family.id}/moment-${user.id}-${Date.now()}.webm`;
+        const { error: upErr } = await supabase.storage
+          .from("audio")
+          .upload(path, audioBlob, { contentType: audioBlob.type || "audio/webm" });
+        if (upErr) throw upErr;
+        const { data } = await supabase.storage
+          .from("audio")
+          .createSignedUrl(path, 60 * 60 * 24 * 30);
+        audioUrl = data?.signedUrl ?? null;
+      }
       const { error } = await supabase.from("moments").insert({
         capsule_id: capsuleId,
         user_id: user.id,
         family_id: family.id,
         content: text.trim().slice(0, 1000) || null,
         image_url: imageUrl,
+        audio_url: audioUrl,
       });
       if (error) throw error;
       toast.success("اتشاركت اللحظة ✨");
       setText("");
       setFile(null);
+      setAudioBlob(null);
       await load();
       await Promise.all([
         awardXP(family.id, "moment"),
@@ -195,6 +212,21 @@ function MomentPage() {
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "شارك"}
           </Button>
         </div>
+        <div className="flex items-center justify-between gap-2">
+          <VoiceRecorder onRecorded={(blob) => setAudioBlob(blob)} disabled={busy} />
+          {audioBlob && (
+            <button
+              type="button"
+              onClick={() => setAudioBlob(null)}
+              className="text-xs text-muted-foreground hover:text-destructive"
+            >
+              امسح الصوت
+            </button>
+          )}
+        </div>
+        {audioBlob && (
+          <AudioPlayer src={URL.createObjectURL(audioBlob)} />
+        )}
       </form>
 
       <div className="space-y-3">
@@ -242,6 +274,11 @@ function MomentPage() {
                   <p className="mt-2 whitespace-pre-wrap text-sm text-foreground">
                     {m.content}
                   </p>
+                )}
+                {m.audio_url && (
+                  <div className="mt-2">
+                    <AudioPlayer src={m.audio_url} />
+                  </div>
                 )}
                 <div className="mt-3 flex flex-wrap gap-2">
                   {["❤️", "😂", "🔥", "👏", "🥺"].map((emoji) => {

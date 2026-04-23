@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { recomputeStreak } from "@/lib/streak";
 import { awardXP } from "@/lib/xp";
 import { notifyPartner } from "@/lib/notifications";
+import { AnswerComments } from "@/components/features/answer-comments";
 
 export const Route = createFileRoute("/today/question")({
   head: () => ({ meta: [{ title: "سؤال اليوم — بيننا" }] }),
@@ -150,11 +151,23 @@ function QuestionPage() {
             mine
           />
           {bothAnswered && partnerAnswer ? (
-            <AnswerCard
-              authorName={partnerName}
-              content={partnerAnswer.content}
-              mine={false}
-            />
+            <>
+              <AnswerCard
+                authorName={partnerName}
+                content={partnerAnswer.content}
+                mine={false}
+              />
+              {family && (
+                <div className="rounded-2xl bg-card p-4 shadow-soft">
+                  <AnswerComments
+                    answerId={partnerAnswer.id}
+                    familyId={family.id}
+                    myProfile={profile}
+                    partnerProfile={partnerProfile}
+                  />
+                </div>
+              )}
+            </>
           ) : (
             <div className="rounded-2xl border-2 border-dashed border-border bg-muted/30 p-6 text-center">
               <Lock className="mx-auto h-8 w-8 text-muted-foreground" />
