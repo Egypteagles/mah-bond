@@ -275,6 +275,11 @@ function MomentPage() {
                     {m.content}
                   </p>
                 )}
+                {m.audio_url && (
+                  <div className="mt-2">
+                    <AudioPlayer src={m.audio_url} />
+                  </div>
+                )}
                 <div className="mt-3 flex flex-wrap gap-2">
                   {["❤️", "😂", "🔥", "👏", "🥺"].map((emoji) => {
                     const count = myReactions.filter((r) => r.emoji === emoji).length;
