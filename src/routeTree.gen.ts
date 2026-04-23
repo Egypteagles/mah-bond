@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TodayRouteImport } from './routes/today'
+import { Route as StatsRouteImport } from './routes/stats'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -27,6 +28,11 @@ import { Route as TodayChallengeRouteImport } from './routes/today.challenge'
 const TodayRoute = TodayRouteImport.update({
   id: '/today',
   path: '/today',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatsRoute = StatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
+  '/stats': typeof StatsRoute
   '/today': typeof TodayRouteWithChildren
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
+  '/stats': typeof StatsRoute
   '/today': typeof TodayRouteWithChildren
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
+  '/stats': typeof StatsRoute
   '/today': typeof TodayRouteWithChildren
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/quiz'
     | '/settings'
+    | '/stats'
     | '/today'
     | '/today/challenge'
     | '/today/moment'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/quiz'
     | '/settings'
+    | '/stats'
     | '/today'
     | '/today/challenge'
     | '/today/moment'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/quiz'
     | '/settings'
+    | '/stats'
     | '/today'
     | '/today/challenge'
     | '/today/moment'
@@ -206,6 +218,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   QuizRoute: typeof QuizRoute
   SettingsRoute: typeof SettingsRoute
+  StatsRoute: typeof StatsRoute
   TodayRoute: typeof TodayRouteWithChildren
 }
 
@@ -216,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/today'
       fullPath: '/today'
       preLoaderRoute: typeof TodayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stats': {
+      id: '/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof StatsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -337,8 +357,18 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   QuizRoute: QuizRoute,
   SettingsRoute: SettingsRoute,
+  StatsRoute: StatsRoute,
   TodayRoute: TodayRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
