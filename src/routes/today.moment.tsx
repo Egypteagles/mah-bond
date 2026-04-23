@@ -212,6 +212,21 @@ function MomentPage() {
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "شارك"}
           </Button>
         </div>
+        <div className="flex items-center justify-between gap-2">
+          <VoiceRecorder onRecorded={(blob) => setAudioBlob(blob)} disabled={busy} />
+          {audioBlob && (
+            <button
+              type="button"
+              onClick={() => setAudioBlob(null)}
+              className="text-xs text-muted-foreground hover:text-destructive"
+            >
+              امسح الصوت
+            </button>
+          )}
+        </div>
+        {audioBlob && (
+          <AudioPlayer src={URL.createObjectURL(audioBlob)} />
+        )}
       </form>
 
       <div className="space-y-3">
