@@ -42,9 +42,9 @@ export async function recomputeStreak(familyId: string) {
   let prev: string | null = null;
   for (const d of sortedDates) {
     if (prev) {
-      const prevDate = new Date(prev);
+      const prevDate: Date = new Date(prev);
       prevDate.setDate(prevDate.getDate() + 1);
-      const expected = prevDate.toISOString().split("T")[0];
+      const expected: string = prevDate.toISOString().split("T")[0];
       if (d === expected) run++;
       else run = 1;
     } else {
