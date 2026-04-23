@@ -46,7 +46,7 @@ function QuizPage() {
       const qs = pickMonthlyQuestions(`${family.id}-${monthKey}`, 5);
       const { data: created } = await supabase
         .from("compatibility_quizzes")
-        .insert({ family_id: family.id, month_key: monthKey, questions: qs })
+        .insert([{ family_id: family.id, month_key: monthKey, questions: qs as unknown as never }])
         .select()
         .single();
       quiz = created;
