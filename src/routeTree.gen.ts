@@ -14,6 +14,7 @@ import { Route as StatsRouteImport } from './routes/stats'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as MoreRouteImport } from './routes/more'
 import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as GoalsRouteImport } from './routes/goals'
 import { Route as FamiliesRouteImport } from './routes/families'
@@ -49,6 +50,11 @@ const QuizRoute = QuizRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoreRoute = MoreRouteImport.update({
+  id: '/more',
+  path: '/more',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InboxRoute = InboxRouteImport.update({
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
+  '/more': typeof MoreRoute
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
+  '/more': typeof MoreRoute
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
+  '/more': typeof MoreRoute
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/families'
     | '/goals'
     | '/inbox'
+    | '/more'
     | '/onboarding'
     | '/quiz'
     | '/settings'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/families'
     | '/goals'
     | '/inbox'
+    | '/more'
     | '/onboarding'
     | '/quiz'
     | '/settings'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/families'
     | '/goals'
     | '/inbox'
+    | '/more'
     | '/onboarding'
     | '/quiz'
     | '/settings'
@@ -228,6 +240,7 @@ export interface RootRouteChildren {
   FamiliesRoute: typeof FamiliesRoute
   GoalsRoute: typeof GoalsRoute
   InboxRoute: typeof InboxRoute
+  MoreRoute: typeof MoreRoute
   OnboardingRoute: typeof OnboardingRoute
   QuizRoute: typeof QuizRoute
   SettingsRoute: typeof SettingsRoute
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/more': {
+      id: '/more'
+      path: '/more'
+      fullPath: '/more'
+      preLoaderRoute: typeof MoreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/inbox': {
@@ -375,6 +395,7 @@ const rootRouteChildren: RootRouteChildren = {
   FamiliesRoute: FamiliesRoute,
   GoalsRoute: GoalsRoute,
   InboxRoute: InboxRoute,
+  MoreRoute: MoreRoute,
   OnboardingRoute: OnboardingRoute,
   QuizRoute: QuizRoute,
   SettingsRoute: SettingsRoute,
