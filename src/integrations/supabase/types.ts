@@ -613,7 +613,14 @@ export type Database = {
       }
     }
     Enums: {
-      family_role: "parent" | "child"
+      family_role:
+        | "parent"
+        | "child"
+        | "mother"
+        | "father"
+        | "sibling"
+        | "grandparent"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -741,7 +748,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      family_role: ["parent", "child"],
+      family_role: [
+        "parent",
+        "child",
+        "mother",
+        "father",
+        "sibling",
+        "grandparent",
+        "other",
+      ],
     },
   },
 } as const
