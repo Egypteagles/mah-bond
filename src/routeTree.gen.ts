@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TreeRouteImport } from './routes/tree'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as StatsRouteImport } from './routes/stats'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -30,6 +31,11 @@ import { Route as TodayMomentRouteImport } from './routes/today.moment'
 import { Route as TodayChallengeRouteImport } from './routes/today.challenge'
 import { Route as AlbumsAlbumIdRouteImport } from './routes/albums.$albumId'
 
+const TreeRoute = TreeRouteImport.update({
+  id: '/tree',
+  path: '/tree',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TodayRoute = TodayRouteImport.update({
   id: '/today',
   path: '/today',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
   '/today': typeof TodayRouteWithChildren
+  '/tree': typeof TreeRoute
   '/albums/$albumId': typeof AlbumsAlbumIdRoute
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -170,6 +177,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
   '/today': typeof TodayRouteWithChildren
+  '/tree': typeof TreeRoute
   '/albums/$albumId': typeof AlbumsAlbumIdRoute
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -193,6 +201,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
   '/today': typeof TodayRouteWithChildren
+  '/tree': typeof TreeRoute
   '/albums/$albumId': typeof AlbumsAlbumIdRoute
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -217,6 +226,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stats'
     | '/today'
+    | '/tree'
     | '/albums/$albumId'
     | '/today/challenge'
     | '/today/moment'
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stats'
     | '/today'
+    | '/tree'
     | '/albums/$albumId'
     | '/today/challenge'
     | '/today/moment'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stats'
     | '/today'
+    | '/tree'
     | '/albums/$albumId'
     | '/today/challenge'
     | '/today/moment'
@@ -284,10 +296,18 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   StatsRoute: typeof StatsRoute
   TodayRoute: typeof TodayRouteWithChildren
+  TreeRoute: typeof TreeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tree': {
+      id: '/tree'
+      path: '/tree'
+      fullPath: '/tree'
+      preLoaderRoute: typeof TreeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/today': {
       id: '/today'
       path: '/today'
@@ -473,6 +493,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   StatsRoute: StatsRoute,
   TodayRoute: TodayRouteWithChildren,
+  TreeRoute: TreeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
