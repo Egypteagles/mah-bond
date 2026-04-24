@@ -16,6 +16,7 @@ import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as GoalsRouteImport } from './routes/goals'
+import { Route as FamiliesRouteImport } from './routes/families'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArchiveRouteImport } from './routes/archive'
@@ -58,6 +59,11 @@ const InboxRoute = InboxRouteImport.update({
 const GoalsRoute = GoalsRouteImport.update({
   id: '/goals',
   path: '/goals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamiliesRoute = FamiliesRouteImport.update({
+  id: '/families',
+  path: '/families',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatRoute = ChatRouteImport.update({
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
   '/onboarding': typeof OnboardingRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/families'
     | '/goals'
     | '/inbox'
     | '/onboarding'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/families'
     | '/goals'
     | '/inbox'
     | '/onboarding'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/families'
     | '/goals'
     | '/inbox'
     | '/onboarding'
@@ -213,6 +225,7 @@ export interface RootRouteChildren {
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
   ChatRoute: typeof ChatRoute
+  FamiliesRoute: typeof FamiliesRoute
   GoalsRoute: typeof GoalsRoute
   InboxRoute: typeof InboxRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -271,6 +284,13 @@ declare module '@tanstack/react-router' {
       path: '/goals'
       fullPath: '/goals'
       preLoaderRoute: typeof GoalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/families': {
+      id: '/families'
+      path: '/families'
+      fullPath: '/families'
+      preLoaderRoute: typeof FamiliesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat': {
@@ -352,6 +372,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
   ChatRoute: ChatRoute,
+  FamiliesRoute: FamiliesRoute,
   GoalsRoute: GoalsRoute,
   InboxRoute: InboxRoute,
   OnboardingRoute: OnboardingRoute,

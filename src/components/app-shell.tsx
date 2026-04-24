@@ -1,14 +1,23 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Heart, Home, Archive, Trophy, Settings, LogOut, MessageSquare, Bell, Star, BarChart3, Brain, Moon, Sun } from "lucide-react";
+import { Heart, Home, Archive, Trophy, Settings, LogOut, MessageSquare, Bell, Star, BarChart3, Brain, Moon, Sun, Users, ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useFamily } from "@/hooks/use-family";
 import { Button } from "@/components/ui/button";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useTheme } from "@/hooks/use-theme";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { signOut } = useAuth();
-  const { family, profile, role } = useFamily();
+  const { family, families, profile, role, switchFamily } = useFamily();
   const navigate = useNavigate();
   const location = useLocation();
   const { unread } = useNotifications();
@@ -34,21 +43,55 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-background pb-24 md:pb-0">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
-          <Link to="/today" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Heart className="h-4 w-4" fill="currentColor" />
-            </div>
-            <div className="flex flex-col leading-tight">
-              <span className="font-display text-sm font-bold text-foreground">
-                {family?.name ?? "بيننا"}
-              </span>
-              {profile && (
-                <span className="text-[11px] text-muted-foreground">
-                  {profile.display_name} · {role === "parent" ? "أب" : role === "child" ? "ابن" : ""}
-                </span>
-              )}
-            </div>
-          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-2 rounded-lg px-2 py-1 transition hover:bg-muted">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                  <Heart className="h-4 w-4" fill="currentColor" />
+                </div>
+                <div className="flex flex-col items-start leading-tight">
+                  <span className="font-display text-sm font-bold text-foreground">
+                    {family?.name ?? "بيننا"}
+                  </span>
+                  {profile && (
+                    <span className="text-[11px] text-muted-foreground">
+                      {profile.display_name} · {roleLabel(role)}
+                    </span>
+                  )}
+                </div>
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-64">
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                عائلاتي ({families.length})
+              </DropdownMenuLabel>
+              {families.map((f) => (
+                <DropdownMenuItem
+                  key={f.id}
+                  onClick={async () => {
+                    if (f.id === family?.id) return;
+                    await switchFamily(f.id);
+                    toast.success(`اتبدّلت لـ ${f.name ?? "العائلة"}`);
+                  }}
+                  className={f.id === family?.id ? "bg-primary/10 font-bold" : ""}
+                >
+                  <Users className="h-4 w-4" />
+                  <div className="flex flex-1 flex-col leading-tight">
+                    <span>{f.name ?? "عائلة"}</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {f.member_count} عضو
+                    </span>
+                  </div>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate({ to: "/families" })}>
+                <Users className="h-4 w-4" />
+                إدارة العائلات
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <nav className="hidden items-center gap-1 md:flex">
             {navItems.map((item) => {
@@ -136,9 +179,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function roleLabel(role: ReturnType<typeof useFamily>["role"]): string {
+  switch (role) {
+    case "parent":
+      return "أب/والد";
+    case "child":
+      return "ابن/ابنة";
+    case "mother":
+      return "أم";
+    case "father":
+      return "أب";
+    case "sibling":
+      return "أخ/أخت";
+    case "grandparent":
+      return "جد/جدة";
+    case "other":
+      return "عضو";
+    default:
+      return "";
+  }
+}
+
 export function RequireFamily({ children }: { children: React.ReactNode }) {
   const { user, loading: authLoading } = useAuth();
-  const { profile, family, loading: famLoading } = useFamily();
+  const { family, families, loading: famLoading } = useFamily();
   const navigate = useNavigate();
 
   if (authLoading || famLoading) {
@@ -154,8 +218,13 @@ export function RequireFamily({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  if (!profile?.family_id || !family) {
+  if (families.length === 0) {
     navigate({ to: "/onboarding" });
+    return null;
+  }
+
+  if (!family) {
+    navigate({ to: "/families" });
     return null;
   }
 
