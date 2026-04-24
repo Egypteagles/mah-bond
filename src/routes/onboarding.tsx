@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { Heart, Copy, Loader2, Users, ArrowRight } from "lucide-react";
@@ -39,10 +39,10 @@ function OnboardingPage() {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    if (!famLoading && profile?.family_id && family) {
+    if (!famLoading && family) {
       navigate({ to: "/today" });
     }
-  }, [famLoading, profile, family, navigate]);
+  }, [famLoading, family, navigate]);
 
   // اختيار افتراضي بناءً على ?role=
   useEffect(() => {
@@ -150,20 +150,26 @@ function CreateFamilyStep({ onDone, onBack }: { onDone: () => void; onBack: () =
         .single();
       if (famErr) throw famErr;
 
-      // اربط الـ profile
-      const { error: profErr } = await supabase
-        .from("profiles")
-        .update({ family_id: fam.id })
-        .eq("id", user.id);
-      if (profErr) throw profErr;
-
-      // أضف الدور
-      const { error: roleErr } = await supabase.from("user_roles").insert({
+      // أضف العضوية في family_members
+      const { error: memErr } = await supabase.from("family_members").insert({
         user_id: user.id,
         family_id: fam.id,
         role: "parent",
       });
-      if (roleErr) throw roleErr;
+      if (memErr) throw memErr;
+
+      // اربط الـ profile كعائلة نشطة
+      await supabase
+        .from("profiles")
+        .update({ family_id: fam.id, active_family_id: fam.id })
+        .eq("id", user.id);
+
+      // أضف الدور لتوافق عكسي
+      await supabase.from("user_roles").insert({
+        user_id: user.id,
+        family_id: fam.id,
+        role: "parent",
+      });
 
       setCreatedCode(inviteCode);
     } catch (err) {
@@ -260,32 +266,24 @@ function JoinFamilyStep({ onDone, onBack }: { onDone: () => void; onBack: () => 
         return;
       }
 
-      // تحقق إن مفيش ابن مرتبط بالفعل
-      const { data: existingChild } = await supabase
-        .from("user_roles")
-        .select("user_id")
-        .eq("family_id", fam.id)
-        .eq("role", "child")
-        .maybeSingle();
-      if (existingChild) {
-        toast.error("في ابن مرتبط بالعائلة دي بالفعل");
-        setLoading(false);
-        return;
-      }
-
-      // اربط الـ profile
-      const { error: profErr } = await supabase
-        .from("profiles")
-        .update({ family_id: fam.id })
-        .eq("id", user.id);
-      if (profErr) throw profErr;
-
-      const { error: roleErr } = await supabase.from("user_roles").insert({
+      // أضف العضوية
+      const { error: memErr } = await supabase.from("family_members").insert({
         user_id: user.id,
         family_id: fam.id,
         role: "child",
       });
-      if (roleErr) throw roleErr;
+      if (memErr) throw memErr;
+
+      await supabase
+        .from("profiles")
+        .update({ family_id: fam.id, active_family_id: fam.id })
+        .eq("id", user.id);
+
+      await supabase.from("user_roles").insert({
+        user_id: user.id,
+        family_id: fam.id,
+        role: "child",
+      });
 
       toast.success("اتربطت بنجاح!");
       onDone();
