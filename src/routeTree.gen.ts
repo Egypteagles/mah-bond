@@ -9,25 +9,43 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TreeRouteImport } from './routes/tree'
 import { Route as TodayRouteImport } from './routes/today'
+import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as StatsRouteImport } from './routes/stats'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as MoreRouteImport } from './routes/more'
 import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as GoalsRouteImport } from './routes/goals'
+import { Route as FamiliesRouteImport } from './routes/families'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as DecisionsRouteImport } from './routes/decisions'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArchiveRouteImport } from './routes/archive'
+import { Route as AlbumsRouteImport } from './routes/albums'
 import { Route as AchievementsRouteImport } from './routes/achievements'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TodayQuestionRouteImport } from './routes/today.question'
 import { Route as TodayMomentRouteImport } from './routes/today.moment'
 import { Route as TodayChallengeRouteImport } from './routes/today.challenge'
+import { Route as AlbumsAlbumIdRouteImport } from './routes/albums.$albumId'
 
+const TreeRoute = TreeRouteImport.update({
+  id: '/tree',
+  path: '/tree',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TodayRoute = TodayRouteImport.update({
   id: '/today',
   path: '/today',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TasksRoute = TasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StatsRoute = StatsRouteImport.update({
@@ -50,6 +68,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MoreRoute = MoreRouteImport.update({
+  id: '/more',
+  path: '/more',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InboxRoute = InboxRouteImport.update({
   id: '/inbox',
   path: '/inbox',
@@ -58,6 +81,21 @@ const InboxRoute = InboxRouteImport.update({
 const GoalsRoute = GoalsRouteImport.update({
   id: '/goals',
   path: '/goals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamiliesRoute = FamiliesRouteImport.update({
+  id: '/families',
+  path: '/families',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DecisionsRoute = DecisionsRouteImport.update({
+  id: '/decisions',
+  path: '/decisions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatRoute = ChatRouteImport.update({
@@ -73,6 +111,11 @@ const AuthRoute = AuthRouteImport.update({
 const ArchiveRoute = ArchiveRouteImport.update({
   id: '/archive',
   path: '/archive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlbumsRoute = AlbumsRouteImport.update({
+  id: '/albums',
+  path: '/albums',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AchievementsRoute = AchievementsRouteImport.update({
@@ -100,20 +143,33 @@ const TodayChallengeRoute = TodayChallengeRouteImport.update({
   path: '/challenge',
   getParentRoute: () => TodayRoute,
 } as any)
+const AlbumsAlbumIdRoute = AlbumsAlbumIdRouteImport.update({
+  id: '/$albumId',
+  path: '/$albumId',
+  getParentRoute: () => AlbumsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/achievements': typeof AchievementsRoute
+  '/albums': typeof AlbumsRouteWithChildren
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/decisions': typeof DecisionsRoute
+  '/events': typeof EventsRoute
+  '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
+  '/more': typeof MoreRoute
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
+  '/tasks': typeof TasksRoute
   '/today': typeof TodayRouteWithChildren
+  '/tree': typeof TreeRoute
+  '/albums/$albumId': typeof AlbumsAlbumIdRoute
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
   '/today/question': typeof TodayQuestionRoute
@@ -121,16 +177,24 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/achievements': typeof AchievementsRoute
+  '/albums': typeof AlbumsRouteWithChildren
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/decisions': typeof DecisionsRoute
+  '/events': typeof EventsRoute
+  '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
+  '/more': typeof MoreRoute
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
+  '/tasks': typeof TasksRoute
   '/today': typeof TodayRouteWithChildren
+  '/tree': typeof TreeRoute
+  '/albums/$albumId': typeof AlbumsAlbumIdRoute
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
   '/today/question': typeof TodayQuestionRoute
@@ -139,16 +203,24 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/achievements': typeof AchievementsRoute
+  '/albums': typeof AlbumsRouteWithChildren
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/decisions': typeof DecisionsRoute
+  '/events': typeof EventsRoute
+  '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
+  '/more': typeof MoreRoute
   '/onboarding': typeof OnboardingRoute
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
+  '/tasks': typeof TasksRoute
   '/today': typeof TodayRouteWithChildren
+  '/tree': typeof TreeRoute
+  '/albums/$albumId': typeof AlbumsAlbumIdRoute
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
   '/today/question': typeof TodayQuestionRoute
@@ -158,16 +230,24 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/achievements'
+    | '/albums'
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/decisions'
+    | '/events'
+    | '/families'
     | '/goals'
     | '/inbox'
+    | '/more'
     | '/onboarding'
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/tasks'
     | '/today'
+    | '/tree'
+    | '/albums/$albumId'
     | '/today/challenge'
     | '/today/moment'
     | '/today/question'
@@ -175,16 +255,24 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/achievements'
+    | '/albums'
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/decisions'
+    | '/events'
+    | '/families'
     | '/goals'
     | '/inbox'
+    | '/more'
     | '/onboarding'
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/tasks'
     | '/today'
+    | '/tree'
+    | '/albums/$albumId'
     | '/today/challenge'
     | '/today/moment'
     | '/today/question'
@@ -192,16 +280,24 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/achievements'
+    | '/albums'
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/decisions'
+    | '/events'
+    | '/families'
     | '/goals'
     | '/inbox'
+    | '/more'
     | '/onboarding'
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/tasks'
     | '/today'
+    | '/tree'
+    | '/albums/$albumId'
     | '/today/challenge'
     | '/today/moment'
     | '/today/question'
@@ -210,25 +306,46 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AchievementsRoute: typeof AchievementsRoute
+  AlbumsRoute: typeof AlbumsRouteWithChildren
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
   ChatRoute: typeof ChatRoute
+  DecisionsRoute: typeof DecisionsRoute
+  EventsRoute: typeof EventsRoute
+  FamiliesRoute: typeof FamiliesRoute
   GoalsRoute: typeof GoalsRoute
   InboxRoute: typeof InboxRoute
+  MoreRoute: typeof MoreRoute
   OnboardingRoute: typeof OnboardingRoute
   QuizRoute: typeof QuizRoute
   SettingsRoute: typeof SettingsRoute
   StatsRoute: typeof StatsRoute
+  TasksRoute: typeof TasksRoute
   TodayRoute: typeof TodayRouteWithChildren
+  TreeRoute: typeof TreeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tree': {
+      id: '/tree'
+      path: '/tree'
+      fullPath: '/tree'
+      preLoaderRoute: typeof TreeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/today': {
       id: '/today'
       path: '/today'
       fullPath: '/today'
       preLoaderRoute: typeof TodayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tasks': {
+      id: '/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof TasksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/stats': {
@@ -259,6 +376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/more': {
+      id: '/more'
+      path: '/more'
+      fullPath: '/more'
+      preLoaderRoute: typeof MoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/inbox': {
       id: '/inbox'
       path: '/inbox'
@@ -271,6 +395,27 @@ declare module '@tanstack/react-router' {
       path: '/goals'
       fullPath: '/goals'
       preLoaderRoute: typeof GoalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/families': {
+      id: '/families'
+      path: '/families'
+      fullPath: '/families'
+      preLoaderRoute: typeof FamiliesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/decisions': {
+      id: '/decisions'
+      path: '/decisions'
+      fullPath: '/decisions'
+      preLoaderRoute: typeof DecisionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat': {
@@ -292,6 +437,13 @@ declare module '@tanstack/react-router' {
       path: '/archive'
       fullPath: '/archive'
       preLoaderRoute: typeof ArchiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/albums': {
+      id: '/albums'
+      path: '/albums'
+      fullPath: '/albums'
+      preLoaderRoute: typeof AlbumsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/achievements': {
@@ -329,8 +481,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TodayChallengeRouteImport
       parentRoute: typeof TodayRoute
     }
+    '/albums/$albumId': {
+      id: '/albums/$albumId'
+      path: '/$albumId'
+      fullPath: '/albums/$albumId'
+      preLoaderRoute: typeof AlbumsAlbumIdRouteImport
+      parentRoute: typeof AlbumsRoute
+    }
   }
 }
+
+interface AlbumsRouteChildren {
+  AlbumsAlbumIdRoute: typeof AlbumsAlbumIdRoute
+}
+
+const AlbumsRouteChildren: AlbumsRouteChildren = {
+  AlbumsAlbumIdRoute: AlbumsAlbumIdRoute,
+}
+
+const AlbumsRouteWithChildren =
+  AlbumsRoute._addFileChildren(AlbumsRouteChildren)
 
 interface TodayRouteChildren {
   TodayChallengeRoute: typeof TodayChallengeRoute
@@ -349,16 +519,23 @@ const TodayRouteWithChildren = TodayRoute._addFileChildren(TodayRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AchievementsRoute: AchievementsRoute,
+  AlbumsRoute: AlbumsRouteWithChildren,
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
   ChatRoute: ChatRoute,
+  DecisionsRoute: DecisionsRoute,
+  EventsRoute: EventsRoute,
+  FamiliesRoute: FamiliesRoute,
   GoalsRoute: GoalsRoute,
   InboxRoute: InboxRoute,
+  MoreRoute: MoreRoute,
   OnboardingRoute: OnboardingRoute,
   QuizRoute: QuizRoute,
   SettingsRoute: SettingsRoute,
   StatsRoute: StatsRoute,
+  TasksRoute: TasksRoute,
   TodayRoute: TodayRouteWithChildren,
+  TreeRoute: TreeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

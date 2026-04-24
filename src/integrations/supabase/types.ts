@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      album_photos: {
+        Row: {
+          album_id: string
+          caption: string | null
+          created_at: string
+          family_id: string
+          id: string
+          image_url: string
+          user_id: string
+        }
+        Insert: {
+          album_id: string
+          caption?: string | null
+          created_at?: string
+          family_id: string
+          id?: string
+          image_url: string
+          user_id: string
+        }
+        Update: {
+          album_id?: string
+          caption?: string | null
+          created_at?: string
+          family_id?: string
+          id?: string
+          image_url?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "album_photos_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "family_albums"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "album_photos_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       answer_comments: {
         Row: {
           answer_id: string
@@ -249,6 +294,48 @@ export type Database = {
           },
         ]
       }
+      decision_votes: {
+        Row: {
+          created_at: string
+          decision_id: string
+          family_id: string
+          id: string
+          option_index: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          decision_id: string
+          family_id: string
+          id?: string
+          option_index: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          decision_id?: string
+          family_id?: string
+          id?: string
+          option_index?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_votes_decision_id_fkey"
+            columns: ["decision_id"]
+            isOneToOne: false
+            referencedRelation: "family_decisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decision_votes_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       families: {
         Row: {
           created_at: string
@@ -272,6 +359,300 @@ export type Database = {
           name?: string | null
         }
         Relationships: []
+      }
+      family_albums: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          family_id: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          family_id: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          family_id?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_albums_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_badges: {
+        Row: {
+          badge_key: string
+          earned_at: string
+          family_id: string
+          id: string
+        }
+        Insert: {
+          badge_key: string
+          earned_at?: string
+          family_id: string
+          id?: string
+        }
+        Update: {
+          badge_key?: string
+          earned_at?: string
+          family_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_badges_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_decisions: {
+        Row: {
+          closed: boolean
+          closes_at: string | null
+          created_at: string
+          created_by: string
+          family_id: string
+          id: string
+          options: Json
+          question: string
+        }
+        Insert: {
+          closed?: boolean
+          closes_at?: string | null
+          created_at?: string
+          created_by: string
+          family_id: string
+          id?: string
+          options: Json
+          question: string
+        }
+        Update: {
+          closed?: boolean
+          closes_at?: string | null
+          created_at?: string
+          created_by?: string
+          family_id?: string
+          id?: string
+          options?: Json
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_decisions_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_events: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          event_date: string
+          event_type: string
+          family_id: string
+          id: string
+          is_recurring: boolean
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          event_date: string
+          event_type?: string
+          family_id: string
+          id?: string
+          is_recurring?: boolean
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          event_date?: string
+          event_type?: string
+          family_id?: string
+          id?: string
+          is_recurring?: boolean
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_events_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_members: {
+        Row: {
+          family_id: string
+          id: string
+          joined_at: string
+          nickname: string | null
+          role: Database["public"]["Enums"]["family_role"]
+          user_id: string
+        }
+        Insert: {
+          family_id: string
+          id?: string
+          joined_at?: string
+          nickname?: string | null
+          role?: Database["public"]["Enums"]["family_role"]
+          user_id: string
+        }
+        Update: {
+          family_id?: string
+          id?: string
+          joined_at?: string
+          nickname?: string | null
+          role?: Database["public"]["Enums"]["family_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_members_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_tree_nodes: {
+        Row: {
+          avatar_url: string | null
+          birth_year: number | null
+          created_at: string
+          created_by: string
+          family_id: string
+          id: string
+          name: string
+          notes: string | null
+          parent_node_id: string | null
+          relation: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          birth_year?: number | null
+          created_at?: string
+          created_by: string
+          family_id: string
+          id?: string
+          name: string
+          notes?: string | null
+          parent_node_id?: string | null
+          relation: string
+        }
+        Update: {
+          avatar_url?: string | null
+          birth_year?: number | null
+          created_at?: string
+          created_by?: string
+          family_id?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          parent_node_id?: string | null
+          relation?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_tree_nodes_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "family_tree_nodes_parent_node_id_fkey"
+            columns: ["parent_node_id"]
+            isOneToOne: false
+            referencedRelation: "family_tree_nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      household_tasks: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          created_by: string
+          done: boolean
+          done_at: string | null
+          done_by: string | null
+          due_date: string | null
+          family_id: string
+          id: string
+          priority: string
+          title: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          created_by: string
+          done?: boolean
+          done_at?: string | null
+          done_by?: string | null
+          due_date?: string | null
+          family_id: string
+          id?: string
+          priority?: string
+          title: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          created_by?: string
+          done?: boolean
+          done_at?: string | null
+          done_by?: string | null
+          due_date?: string | null
+          family_id?: string
+          id?: string
+          priority?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "household_tasks_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {
@@ -437,6 +818,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          active_family_id: string | null
           avatar_url: string | null
           created_at: string
           display_name: string
@@ -447,6 +829,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          active_family_id?: string | null
           avatar_url?: string | null
           created_at?: string
           display_name: string
@@ -457,6 +840,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          active_family_id?: string | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string
@@ -467,6 +851,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "profiles_active_family_id_fkey"
+            columns: ["active_family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_family_id_fkey"
             columns: ["family_id"]
@@ -599,6 +990,38 @@ export type Database = {
           },
         ]
       }
+      yearly_memories: {
+        Row: {
+          family_id: string
+          generated_at: string
+          highlights: Json
+          id: string
+          year: number
+        }
+        Insert: {
+          family_id: string
+          generated_at?: string
+          highlights?: Json
+          id?: string
+          year: number
+        }
+        Update: {
+          family_id?: string
+          generated_at?: string
+          highlights?: Json
+          id?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "yearly_memories_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -611,9 +1034,20 @@ export type Database = {
         Args: { _family_id: string; _user_id: string }
         Returns: boolean
       }
+      is_member_of: {
+        Args: { _family_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      family_role: "parent" | "child"
+      family_role:
+        | "parent"
+        | "child"
+        | "mother"
+        | "father"
+        | "sibling"
+        | "grandparent"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -741,7 +1175,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      family_role: ["parent", "child"],
+      family_role: [
+        "parent",
+        "child",
+        "mother",
+        "father",
+        "sibling",
+        "grandparent",
+        "other",
+      ],
     },
   },
 } as const
