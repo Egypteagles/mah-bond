@@ -21,6 +21,7 @@ import { Route as FamiliesRouteImport } from './routes/families'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArchiveRouteImport } from './routes/archive'
+import { Route as AlbumsRouteImport } from './routes/albums'
 import { Route as AchievementsRouteImport } from './routes/achievements'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TodayQuestionRouteImport } from './routes/today.question'
@@ -87,6 +88,11 @@ const ArchiveRoute = ArchiveRouteImport.update({
   path: '/archive',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AlbumsRoute = AlbumsRouteImport.update({
+  id: '/albums',
+  path: '/albums',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AchievementsRoute = AchievementsRouteImport.update({
   id: '/achievements',
   path: '/achievements',
@@ -116,6 +122,7 @@ const TodayChallengeRoute = TodayChallengeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/achievements': typeof AchievementsRoute
+  '/albums': typeof AlbumsRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/achievements': typeof AchievementsRoute
+  '/albums': typeof AlbumsRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
@@ -155,6 +163,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/achievements': typeof AchievementsRoute
+  '/albums': typeof AlbumsRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/achievements'
+    | '/albums'
     | '/archive'
     | '/auth'
     | '/chat'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/achievements'
+    | '/albums'
     | '/archive'
     | '/auth'
     | '/chat'
@@ -214,6 +225,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/achievements'
+    | '/albums'
     | '/archive'
     | '/auth'
     | '/chat'
@@ -234,6 +246,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AchievementsRoute: typeof AchievementsRoute
+  AlbumsRoute: typeof AlbumsRoute
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
   ChatRoute: typeof ChatRoute
@@ -334,6 +347,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArchiveRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/albums': {
+      id: '/albums'
+      path: '/albums'
+      fullPath: '/albums'
+      preLoaderRoute: typeof AlbumsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/achievements': {
       id: '/achievements'
       path: '/achievements'
@@ -389,6 +409,7 @@ const TodayRouteWithChildren = TodayRoute._addFileChildren(TodayRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AchievementsRoute: AchievementsRoute,
+  AlbumsRoute: AlbumsRoute,
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
   ChatRoute: ChatRoute,
