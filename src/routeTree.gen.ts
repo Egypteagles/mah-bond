@@ -20,6 +20,7 @@ import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as GoalsRouteImport } from './routes/goals'
 import { Route as FamiliesRouteImport } from './routes/families'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as DecisionsRouteImport } from './routes/decisions'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArchiveRouteImport } from './routes/archive'
@@ -86,6 +87,11 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DecisionsRoute = DecisionsRouteImport.update({
+  id: '/decisions',
+  path: '/decisions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChatRoute = ChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/decisions': typeof DecisionsRoute
   '/events': typeof EventsRoute
   '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/decisions': typeof DecisionsRoute
   '/events': typeof EventsRoute
   '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRoute
+  '/decisions': typeof DecisionsRoute
   '/events': typeof EventsRoute
   '/families': typeof FamiliesRoute
   '/goals': typeof GoalsRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/decisions'
     | '/events'
     | '/families'
     | '/goals'
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/decisions'
     | '/events'
     | '/families'
     | '/goals'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/chat'
+    | '/decisions'
     | '/events'
     | '/families'
     | '/goals'
@@ -286,6 +298,7 @@ export interface RootRouteChildren {
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
   ChatRoute: typeof ChatRoute
+  DecisionsRoute: typeof DecisionsRoute
   EventsRoute: typeof EventsRoute
   FamiliesRoute: typeof FamiliesRoute
   GoalsRoute: typeof GoalsRoute
@@ -376,6 +389,13 @@ declare module '@tanstack/react-router' {
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/decisions': {
+      id: '/decisions'
+      path: '/decisions'
+      fullPath: '/decisions'
+      preLoaderRoute: typeof DecisionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat': {
@@ -483,6 +503,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
   ChatRoute: ChatRoute,
+  DecisionsRoute: DecisionsRoute,
   EventsRoute: EventsRoute,
   FamiliesRoute: FamiliesRoute,
   GoalsRoute: GoalsRoute,
