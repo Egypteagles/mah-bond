@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TreeRouteImport } from './routes/tree'
 import { Route as TodayRouteImport } from './routes/today'
+import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as StatsRouteImport } from './routes/stats'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as QuizRouteImport } from './routes/quiz'
@@ -40,6 +41,11 @@ const TreeRoute = TreeRouteImport.update({
 const TodayRoute = TodayRouteImport.update({
   id: '/today',
   path: '/today',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TasksRoute = TasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StatsRoute = StatsRouteImport.update({
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
+  '/tasks': typeof TasksRoute
   '/today': typeof TodayRouteWithChildren
   '/tree': typeof TreeRoute
   '/albums/$albumId': typeof AlbumsAlbumIdRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
+  '/tasks': typeof TasksRoute
   '/today': typeof TodayRouteWithChildren
   '/tree': typeof TreeRoute
   '/albums/$albumId': typeof AlbumsAlbumIdRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/quiz': typeof QuizRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof StatsRoute
+  '/tasks': typeof TasksRoute
   '/today': typeof TodayRouteWithChildren
   '/tree': typeof TreeRoute
   '/albums/$albumId': typeof AlbumsAlbumIdRoute
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/tasks'
     | '/today'
     | '/tree'
     | '/albums/$albumId'
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/tasks'
     | '/today'
     | '/tree'
     | '/albums/$albumId'
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/settings'
     | '/stats'
+    | '/tasks'
     | '/today'
     | '/tree'
     | '/albums/$albumId'
@@ -308,6 +320,7 @@ export interface RootRouteChildren {
   QuizRoute: typeof QuizRoute
   SettingsRoute: typeof SettingsRoute
   StatsRoute: typeof StatsRoute
+  TasksRoute: typeof TasksRoute
   TodayRoute: typeof TodayRouteWithChildren
   TreeRoute: typeof TreeRoute
 }
@@ -326,6 +339,13 @@ declare module '@tanstack/react-router' {
       path: '/today'
       fullPath: '/today'
       preLoaderRoute: typeof TodayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tasks': {
+      id: '/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof TasksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/stats': {
@@ -513,6 +533,7 @@ const rootRouteChildren: RootRouteChildren = {
   QuizRoute: QuizRoute,
   SettingsRoute: SettingsRoute,
   StatsRoute: StatsRoute,
+  TasksRoute: TasksRoute,
   TodayRoute: TodayRouteWithChildren,
   TreeRoute: TreeRoute,
 }
