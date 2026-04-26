@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Heart, Home, Archive, Trophy, Settings, LogOut, MessageSquare, Bell, Star, BarChart3, Brain, Moon, Sun, Users, ChevronDown, LayoutGrid } from "lucide-react";
+import { Heart, Home, Archive, Trophy, Settings, LogOut, MessageSquare, Bell, Star, BarChart3, Brain, Moon, Sun, Users, ChevronDown, LayoutGrid, AlertCircle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useFamily } from "@/hooks/use-family";
 import { Button } from "@/components/ui/button";
@@ -46,6 +46,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { to: "/archive", label: "أرشيف", icon: Archive },
     { to: "/more", label: "المزيد", icon: LayoutGrid },
   ] as const;
+
+  // الصفحات الفرعية التي تتبع تبويب "المزيد"
+  const MORE_PATHS = [
+    "/more",
+    "/albums",
+    "/events",
+    "/tree",
+    "/yearly",
+    "/decisions",
+    "/tasks",
+    "/family-badges",
+    "/achievements",
+    "/quiz",
+    "/stats",
+    "/families",
+    "/settings",
+  ];
+  const isMoreActive = MORE_PATHS.some(
+    (p) => location.pathname === p || location.pathname.startsWith(p + "/"),
+  );
 
   return (
     <div className="min-h-screen bg-background pb-24 md:pb-0">
@@ -169,8 +189,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex max-w-4xl items-center justify-around overflow-x-auto px-1 py-2">
           {mobileNav.map((item) => {
             const Icon = item.icon;
-            const active = location.pathname === item.to ||
-              (item.to !== "/today" && location.pathname.startsWith(item.to));
+            let active: boolean;
+            if (item.to === "/more") {
+              active = isMoreActive;
+            } else if (item.to === "/today") {
+              active = location.pathname === "/today" || location.pathname.startsWith("/today/");
+            } else {
+              active = location.pathname === item.to || location.pathname.startsWith(item.to + "/");
+            }
             return (
               <Link
                 key={item.to}
@@ -235,8 +261,27 @@ export function RequireFamily({ children }: { children: React.ReactNode }) {
   }
 
   if (!family) {
-    navigate({ to: "/families" });
-    return null;
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <div className="max-w-md rounded-3xl border border-border bg-card p-6 text-center shadow-soft">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+            <AlertCircle className="h-7 w-7" />
+          </div>
+          <h2 className="mt-4 font-display text-xl font-bold text-foreground">
+            مش متابع لأي عائلة
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            عشان تشوف الكبسولة لازم تختار عائلة أو تنضم لواحدة.
+          </p>
+          <button
+            onClick={() => navigate({ to: "/families" })}
+            className="mt-5 inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
+          >
+            اختار عائلة
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return <>{children}</>;

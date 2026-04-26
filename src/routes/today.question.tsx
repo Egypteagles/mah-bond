@@ -12,6 +12,7 @@ import { recomputeStreak } from "@/lib/streak";
 import { awardXP } from "@/lib/xp";
 import { notifyPartner } from "@/lib/notifications";
 import { AnswerComments } from "@/components/features/answer-comments";
+import { NotMemberNotice } from "./today";
 
 export const Route = createFileRoute("/today/question")({
   head: () => ({ meta: [{ title: "سؤال اليوم — بيننا" }] }),
@@ -39,24 +40,38 @@ function QuestionPage() {
   const [draft, setDraft] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [forbidden, setForbidden] = useState(false);
 
   async function load() {
     if (!family) return;
-    const c = await ensureTodayCapsule(family.id);
-    setCapsule({ id: c.id, question: c.question });
-    const { data } = await supabase
-      .from("answers")
-      .select("*")
-      .eq("capsule_id", c.id)
-      .order("created_at");
-    setAnswers((data ?? []) as AnswerRow[]);
-    setLoading(false);
+    try {
+      const c = await ensureTodayCapsule(family.id);
+      setCapsule({ id: c.id, question: c.question });
+      const { data } = await supabase
+        .from("answers")
+        .select("*")
+        .eq("capsule_id", c.id)
+        .order("created_at");
+      setAnswers((data ?? []) as AnswerRow[]);
+    } catch (err) {
+      if (err instanceof Error && err.message === "not_a_member") {
+        setForbidden(true);
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
+    setLoading(true);
+    setCapsule(null);
+    setAnswers([]);
+    setForbidden(false);
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [family]);
+  }, [family?.id]);
+
+  if (forbidden) return <NotMemberNotice />;
 
   const myAnswer = answers.find((a) => a.user_id === user?.id);
   const partnerAnswer = answers.find((a) => a.user_id !== user?.id);

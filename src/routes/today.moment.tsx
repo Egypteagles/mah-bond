@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { awardXP } from "@/lib/xp";
 import { notifyPartner } from "@/lib/notifications";
 import { VoiceRecorder, AudioPlayer } from "@/components/features/voice-recorder";
+import { NotMemberNotice } from "./today";
 
 export const Route = createFileRoute("/today/moment")({
   head: () => ({ meta: [{ title: "لحظة اليوم — بيننا" }] }),
@@ -45,11 +46,22 @@ function MomentPage() {
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [forbidden, setForbidden] = useState(false);
 
   async function load() {
     if (!family) return;
-    const c = await ensureTodayCapsule(family.id);
-    setCapsuleId(c.id);
+    let c: { id: string };
+    try {
+      c = await ensureTodayCapsule(family.id);
+      setCapsuleId(c.id);
+    } catch (err) {
+      if (err instanceof Error && err.message === "not_a_member") {
+        setForbidden(true);
+        setLoading(false);
+        return;
+      }
+      throw err;
+    }
     const [{ data: m }, { data: r }] = await Promise.all([
       supabase
         .from("moments")
@@ -72,9 +84,16 @@ function MomentPage() {
   }
 
   useEffect(() => {
+    setLoading(true);
+    setCapsuleId(null);
+    setMoments([]);
+    setReactions([]);
+    setForbidden(false);
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [family]);
+  }, [family?.id]);
+
+  if (forbidden) return <NotMemberNotice />;
 
   async function share(e: React.FormEvent) {
     e.preventDefault();
