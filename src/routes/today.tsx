@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Clock,
   ArrowLeft,
+  ShieldAlert,
 } from "lucide-react";
 import { AppShell, RequireFamily } from "@/components/app-shell";
 import { useFamily, ensureTodayCapsule } from "@/hooks/use-family";
@@ -50,9 +51,14 @@ function TodayPage() {
   const { family, partnerProfile, profile } = useFamily();
   const [state, setState] = useState<TodayState | null>(null);
   const [loading, setLoading] = useState(true);
+  const [forbidden, setForbidden] = useState(false);
 
   useEffect(() => {
     if (!family || !user) return;
+    // إعادة الضبط عند تبديل العائلة لمنع ظهور بيانات قديمة
+    setLoading(true);
+    setState(null);
+    setForbidden(false);
     let cancelled = false;
     (async () => {
       try {
@@ -90,6 +96,10 @@ function TodayPage() {
           streak: streakRow.data?.current_streak ?? 0,
           longest: streakRow.data?.longest_streak ?? 0,
         });
+      } catch (err) {
+        if (!cancelled && err instanceof Error && err.message === "not_a_member") {
+          setForbidden(true);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -97,7 +107,11 @@ function TodayPage() {
     return () => {
       cancelled = true;
     };
-  }, [family, user, partnerProfile]);
+  }, [family?.id, user?.id, partnerProfile?.id]);
+
+  if (forbidden) {
+    return <NotMemberNotice />;
+  }
 
   if (loading || !state) {
     return (
