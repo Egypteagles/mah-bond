@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Loader2, Plus, Users, LogIn, Heart, Check, ArrowLeft, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Loader2, Plus, Users, LogIn, Heart, Check, ArrowLeft, LogOut, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,10 +31,30 @@ const ROLE_LABELS: Record<FamilyRole, string> = {
 
 function FamiliesPage() {
   const { user, signOut } = useAuth();
-  const { families, family, loading, switchFamily, refresh } = useFamily();
+  const { families, family, role, members, loading, switchFamily, refresh } = useFamily();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"list" | "create" | "join">("list");
   const [switching, setSwitching] = useState<string | null>(null);
+  const [memberRoles, setMemberRoles] = useState<Record<string, FamilyRole>>({});
+
+  // جلب أدوار أعضاء العائلة النشطة
+  useEffect(() => {
+    if (!family) {
+      setMemberRoles({});
+      return;
+    }
+    supabase
+      .from("family_members")
+      .select("user_id, role")
+      .eq("family_id", family.id)
+      .then(({ data }) => {
+        const map: Record<string, FamilyRole> = {};
+        (data ?? []).forEach((r) => {
+          map[r.user_id] = r.role as FamilyRole;
+        });
+        setMemberRoles(map);
+      });
+  }, [family?.id]);
 
   if (loading) {
     return (
@@ -92,6 +112,15 @@ function FamiliesPage() {
           )}
         </div>
 
+        {family && mode === "list" && (
+          <ActiveFamilyCard
+            family={family}
+            role={role}
+            members={members}
+            memberRoles={memberRoles}
+          />
+        )}
+
         <div className="rounded-3xl bg-card p-6 shadow-warm">
           {mode === "list" && (
             <ListView
@@ -112,6 +141,79 @@ function FamiliesPage() {
           {mode === "join" && <JoinView onBack={() => setMode("list")} onDone={async () => { await refresh(); setMode("list"); }} />}
         </div>
       </div>
+    </div>
+  );
+}
+
+function ActiveFamilyCard({
+  family,
+  role,
+  members,
+  memberRoles,
+}: {
+  family: { id: string; name: string | null; invite_code: string };
+  role: FamilyRole | null;
+  members: ReturnType<typeof useFamily>["members"];
+  memberRoles: Record<string, FamilyRole>;
+}) {
+  const initials = (family.name ?? "ع").trim().charAt(0);
+  return (
+    <div className="mb-4 rounded-3xl bg-gradient-warm p-5 shadow-soft">
+      <div className="flex items-center gap-3">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-2xl font-black text-primary-foreground shadow-warm">
+          {initials}
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+              العائلة النشطة
+            </span>
+            {role && (
+              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+                {ROLE_LABELS[role]}
+              </span>
+            )}
+          </div>
+          <h2 className="mt-1 font-display text-lg font-bold text-foreground">
+            {family.name ?? "عائلتي"}
+          </h2>
+          <div className="text-[11px] text-muted-foreground" dir="ltr">
+            كود: <span className="font-mono font-bold tracking-widest">{family.invite_code}</span>
+          </div>
+        </div>
+      </div>
+      {members.length > 0 && (
+        <div className="mt-4 border-t border-border/50 pt-3">
+          <div className="mb-2 text-[11px] font-bold text-muted-foreground">
+            الأعضاء ({members.length})
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {members.map((m) => {
+              const r = memberRoles[m.id];
+              return (
+                <div
+                  key={m.id}
+                  className="flex items-center gap-2 rounded-xl bg-card/70 px-2 py-1.5"
+                >
+                  <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-xs font-bold text-primary">
+                    {m.avatar_url ? (
+                      <img src={m.avatar_url} alt="" className="h-full w-full object-cover" />
+                    ) : (
+                      m.display_name.charAt(0)
+                    )}
+                  </div>
+                  <div className="leading-tight">
+                    <div className="text-xs font-bold text-foreground">{m.display_name}</div>
+                    {r && (
+                      <div className="text-[10px] text-muted-foreground">{ROLE_LABELS[r]}</div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
