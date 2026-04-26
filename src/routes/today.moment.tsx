@@ -50,8 +50,9 @@ function MomentPage() {
 
   async function load() {
     if (!family) return;
+    let c: { id: string };
     try {
-      const c = await ensureTodayCapsule(family.id);
+      c = await ensureTodayCapsule(family.id);
       setCapsuleId(c.id);
     } catch (err) {
       if (err instanceof Error && err.message === "not_a_member") {
@@ -83,9 +84,16 @@ function MomentPage() {
   }
 
   useEffect(() => {
+    setLoading(true);
+    setCapsuleId(null);
+    setMoments([]);
+    setReactions([]);
+    setForbidden(false);
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [family]);
+  }, [family?.id]);
+
+  if (forbidden) return <NotMemberNotice />;
 
   async function share(e: React.FormEvent) {
     e.preventDefault();
