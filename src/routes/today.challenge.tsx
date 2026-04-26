@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { recomputeStreak } from "@/lib/streak";
 import { awardXP } from "@/lib/xp";
 import { notifyPartner } from "@/lib/notifications";
+import { NotMemberNotice } from "./today";
 
 export const Route = createFileRoute("/today/challenge")({
   head: () => ({ meta: [{ title: "تحدي اليوم — بيننا" }] }),
@@ -30,23 +31,37 @@ function ChallengePage() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
+  const [forbidden, setForbidden] = useState(false);
 
   async function load() {
     if (!family) return;
-    const c = await ensureTodayCapsule(family.id);
-    setCapsule({ id: c.id, challenge: c.challenge });
-    const { data } = await supabase
-      .from("challenge_completions")
-      .select("user_id")
-      .eq("capsule_id", c.id);
-    setCompletions(data ?? []);
-    setLoading(false);
+    try {
+      const c = await ensureTodayCapsule(family.id);
+      setCapsule({ id: c.id, challenge: c.challenge });
+      const { data } = await supabase
+        .from("challenge_completions")
+        .select("user_id")
+        .eq("capsule_id", c.id);
+      setCompletions(data ?? []);
+    } catch (err) {
+      if (err instanceof Error && err.message === "not_a_member") {
+        setForbidden(true);
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
+    setLoading(true);
+    setCapsule(null);
+    setCompletions([]);
+    setForbidden(false);
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [family]);
+  }, [family?.id]);
+
+  if (forbidden) return <NotMemberNotice />;
 
   const myDone = completions.some((c) => c.user_id === user?.id);
   const partnerDone = partnerProfile
