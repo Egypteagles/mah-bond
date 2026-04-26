@@ -297,3 +297,27 @@ function StatusChip({
     </span>
   );
 }
+
+export function NotMemberNotice() {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center px-4">
+      <div className="max-w-md rounded-3xl border border-border bg-card p-6 text-center shadow-soft">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+          <ShieldAlert className="h-7 w-7" />
+        </div>
+        <h2 className="mt-4 font-display text-xl font-bold text-foreground">
+          مش عضو في العائلة دي
+        </h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          الكبسولة دي تخص عائلة إنت مش منضم لها. بدّل لعائلتك من زر الهيدر، أو افتح صفحة "عائلاتي".
+        </p>
+        <Link
+          to="/families"
+          className="mt-5 inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
+        >
+          فتح عائلاتي
+        </Link>
+      </div>
+    </div>
+  );
+}
