@@ -69,7 +69,7 @@ function YearlyPage() {
       top_emoji: "❤️",
     };
     await supabase.from("yearly_memories").upsert(
-      { family_id: family.id, year, highlights: newHighlights as Record<string, unknown> },
+      [{ family_id: family.id, year, highlights: newHighlights as Record<string, unknown> }],
       { onConflict: "family_id,year" },
     );
     setHighlights(newHighlights);
