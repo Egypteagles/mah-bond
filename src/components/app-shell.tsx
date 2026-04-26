@@ -141,6 +141,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-1 md:hidden">
+            <Link to="/families" className="inline-flex h-9 w-9 items-center justify-center text-muted-foreground" title="عائلاتي">
+              <Users className="h-5 w-5" />
+            </Link>
             <Link to="/inbox" className="relative inline-flex h-9 w-9 items-center justify-center text-muted-foreground">
               <Bell className="h-5 w-5" />
               {unread > 0 && (
