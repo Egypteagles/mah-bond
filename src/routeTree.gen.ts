@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as YearlyRouteImport } from './routes/yearly'
 import { Route as TreeRouteImport } from './routes/tree'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as TasksRouteImport } from './routes/tasks'
@@ -19,6 +20,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as GoalsRouteImport } from './routes/goals'
+import { Route as FamilyBadgesRouteImport } from './routes/family-badges'
 import { Route as FamiliesRouteImport } from './routes/families'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DecisionsRouteImport } from './routes/decisions'
@@ -33,6 +35,11 @@ import { Route as TodayMomentRouteImport } from './routes/today.moment'
 import { Route as TodayChallengeRouteImport } from './routes/today.challenge'
 import { Route as AlbumsAlbumIdRouteImport } from './routes/albums.$albumId'
 
+const YearlyRoute = YearlyRouteImport.update({
+  id: '/yearly',
+  path: '/yearly',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TreeRoute = TreeRouteImport.update({
   id: '/tree',
   path: '/tree',
@@ -81,6 +88,11 @@ const InboxRoute = InboxRouteImport.update({
 const GoalsRoute = GoalsRouteImport.update({
   id: '/goals',
   path: '/goals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamilyBadgesRoute = FamilyBadgesRouteImport.update({
+  id: '/family-badges',
+  path: '/family-badges',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FamiliesRoute = FamiliesRouteImport.update({
@@ -159,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/decisions': typeof DecisionsRoute
   '/events': typeof EventsRoute
   '/families': typeof FamiliesRoute
+  '/family-badges': typeof FamilyBadgesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
   '/more': typeof MoreRoute
@@ -169,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/tasks': typeof TasksRoute
   '/today': typeof TodayRouteWithChildren
   '/tree': typeof TreeRoute
+  '/yearly': typeof YearlyRoute
   '/albums/$albumId': typeof AlbumsAlbumIdRoute
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -184,6 +198,7 @@ export interface FileRoutesByTo {
   '/decisions': typeof DecisionsRoute
   '/events': typeof EventsRoute
   '/families': typeof FamiliesRoute
+  '/family-badges': typeof FamilyBadgesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
   '/more': typeof MoreRoute
@@ -194,6 +209,7 @@ export interface FileRoutesByTo {
   '/tasks': typeof TasksRoute
   '/today': typeof TodayRouteWithChildren
   '/tree': typeof TreeRoute
+  '/yearly': typeof YearlyRoute
   '/albums/$albumId': typeof AlbumsAlbumIdRoute
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -210,6 +226,7 @@ export interface FileRoutesById {
   '/decisions': typeof DecisionsRoute
   '/events': typeof EventsRoute
   '/families': typeof FamiliesRoute
+  '/family-badges': typeof FamilyBadgesRoute
   '/goals': typeof GoalsRoute
   '/inbox': typeof InboxRoute
   '/more': typeof MoreRoute
@@ -220,6 +237,7 @@ export interface FileRoutesById {
   '/tasks': typeof TasksRoute
   '/today': typeof TodayRouteWithChildren
   '/tree': typeof TreeRoute
+  '/yearly': typeof YearlyRoute
   '/albums/$albumId': typeof AlbumsAlbumIdRoute
   '/today/challenge': typeof TodayChallengeRoute
   '/today/moment': typeof TodayMomentRoute
@@ -237,6 +255,7 @@ export interface FileRouteTypes {
     | '/decisions'
     | '/events'
     | '/families'
+    | '/family-badges'
     | '/goals'
     | '/inbox'
     | '/more'
@@ -247,6 +266,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/today'
     | '/tree'
+    | '/yearly'
     | '/albums/$albumId'
     | '/today/challenge'
     | '/today/moment'
@@ -262,6 +282,7 @@ export interface FileRouteTypes {
     | '/decisions'
     | '/events'
     | '/families'
+    | '/family-badges'
     | '/goals'
     | '/inbox'
     | '/more'
@@ -272,6 +293,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/today'
     | '/tree'
+    | '/yearly'
     | '/albums/$albumId'
     | '/today/challenge'
     | '/today/moment'
@@ -287,6 +309,7 @@ export interface FileRouteTypes {
     | '/decisions'
     | '/events'
     | '/families'
+    | '/family-badges'
     | '/goals'
     | '/inbox'
     | '/more'
@@ -297,6 +320,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/today'
     | '/tree'
+    | '/yearly'
     | '/albums/$albumId'
     | '/today/challenge'
     | '/today/moment'
@@ -313,6 +337,7 @@ export interface RootRouteChildren {
   DecisionsRoute: typeof DecisionsRoute
   EventsRoute: typeof EventsRoute
   FamiliesRoute: typeof FamiliesRoute
+  FamilyBadgesRoute: typeof FamilyBadgesRoute
   GoalsRoute: typeof GoalsRoute
   InboxRoute: typeof InboxRoute
   MoreRoute: typeof MoreRoute
@@ -323,10 +348,18 @@ export interface RootRouteChildren {
   TasksRoute: typeof TasksRoute
   TodayRoute: typeof TodayRouteWithChildren
   TreeRoute: typeof TreeRoute
+  YearlyRoute: typeof YearlyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/yearly': {
+      id: '/yearly'
+      path: '/yearly'
+      fullPath: '/yearly'
+      preLoaderRoute: typeof YearlyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tree': {
       id: '/tree'
       path: '/tree'
@@ -395,6 +428,13 @@ declare module '@tanstack/react-router' {
       path: '/goals'
       fullPath: '/goals'
       preLoaderRoute: typeof GoalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/family-badges': {
+      id: '/family-badges'
+      path: '/family-badges'
+      fullPath: '/family-badges'
+      preLoaderRoute: typeof FamilyBadgesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/families': {
@@ -526,6 +566,7 @@ const rootRouteChildren: RootRouteChildren = {
   DecisionsRoute: DecisionsRoute,
   EventsRoute: EventsRoute,
   FamiliesRoute: FamiliesRoute,
+  FamilyBadgesRoute: FamilyBadgesRoute,
   GoalsRoute: GoalsRoute,
   InboxRoute: InboxRoute,
   MoreRoute: MoreRoute,
@@ -536,6 +577,7 @@ const rootRouteChildren: RootRouteChildren = {
   TasksRoute: TasksRoute,
   TodayRoute: TodayRouteWithChildren,
   TreeRoute: TreeRoute,
+  YearlyRoute: YearlyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
