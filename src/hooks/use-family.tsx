@@ -152,6 +152,12 @@ export function useFamily() {
         .update({ active_family_id: familyId, family_id: familyId })
         .eq("id", user.id);
       await refresh();
+      // إعلام أي مكوّن مشترك على بيانات العائلة بإعادة التحميل
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("family:changed", { detail: { familyId } }),
+        );
+      }
     },
     [user, refresh],
   );
@@ -175,6 +181,20 @@ export function useFamily() {
 
 // ضمان وجود كبسولة لليوم — تنشأ تلقائياً لو مش موجودة
 export async function ensureTodayCapsule(familyId: string) {
+  // تحقق صريح أن المستخدم الحالي عضو في العائلة (يحمي الـ UI من بيانات قديمة)
+  const { data: sessionData } = await supabase.auth.getUser();
+  const uid = sessionData.user?.id;
+  if (uid) {
+    const { data: membership } = await supabase
+      .from("family_members")
+      .select("id")
+      .eq("family_id", familyId)
+      .eq("user_id", uid)
+      .maybeSingle();
+    if (!membership) {
+      throw new Error("not_a_member");
+    }
+  }
   const date = todayISO();
   const { data: existing } = await supabase
     .from("daily_capsules")
